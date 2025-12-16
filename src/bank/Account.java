@@ -48,19 +48,11 @@ public class Account {
 	}
 
 	/**
-	 * Updates the account's balance with the deposit value
-	 * @param deposit - Value to deposit
+	 * Updates the account's balance with the transaction's value
+	 * @param deposit - Transaction's value
 	 */
-	public void deposit(BigDecimal deposit) {
-		this.balance = this.balance.add(deposit);	
-	}
-
-	/**
-	 * Updates the account's balance with the expense value
-	 * @param expense - Value to charge
-	 */
-	public void expense(BigDecimal expense) {
-		this.balance = this.balance.subtract(expense);
+	public void transaction(BigDecimal ammount) {
+		this.balance = this.balance.add(ammount);
 	}
 
 	/**

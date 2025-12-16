@@ -2,6 +2,8 @@ package bank;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class to handle all assets' details and operations
@@ -9,35 +11,33 @@ import java.util.Arrays;
  */
 public class Assets {
 
-	private Currency mainCurrency;
-	private Account[] assets;
+	private List<Account> assets;
 
-	public Assets(Currency mainCurrency) {
-		this.mainCurrency = mainCurrency;
-		this.assets = new Account[9];
+	public Assets() {
+		this.assets = new ArrayList<Account>();
 	}
 
 	/**
 	 * Returns assets' main currency
-	 *@return mainCurrency
+	 * @return mainCurrency
 	 */
 	public Currency getMainCurrency() {
-		return this.mainCurrency;
+		BigDecimal[] balance = getBalance();
+		int maxIndex = 0;
+
+		for (int i = 1; i < balance.length; i++) {
+			if (balance[maxIndex].compareTo(balance[i]) == 1) {
+				maxIndex = i;
+			}
+		}
+		return Currency.getById(maxIndex);
 	}
 
 	/**
-	 * Sets a new main currency
-	 * @param mainCurrency - New main currency
-	 */
-	public void setMainCurrency(Currency currency) {
-		this.mainCurrency = currency;
-	}
-
-	/**
-	 * Returns the list of assets
+	 * Returns the array list of assets
 	 * @returns assets
 	 */
-	public Account[] getAssets() {
+	public List<Account> getAssets() {
 		return this.assets;
 	}
 
@@ -48,9 +48,9 @@ public class Assets {
 	 * @return isAdded?
 	 */
 	public boolean addAccount(Account account) {
-		for (int i = 0; i < this.assets.length; i++) {
-			if (this.assets[i] == null) {
-				this.assets[i] = account;
+		for (int i = 0; i < this.assets.size(); i++) {
+			if (this.assets.get(i) == null) {
+				this.assets.set(i, account);
 				return true;
 			}
 		}
@@ -65,19 +65,19 @@ public class Assets {
 	 */
 	public boolean remAccount(Account account) {
 		boolean rem = false;
-		int length = this.assets.length;
+		int length = this.assets.size();
 		for (int i = 0; i < length; i++) {
 			// Compares if the account is the same
-			if (this.assets[i].compare(account)) {
+			if (this.assets.get(i).compare(account)) {
 				rem = true;	
 			}
 
 			if (rem && i < length) {
-				this.assets[i] = this.assets[i + 1];
+				this.assets.set(i, this.assets.get(i + 1));
 			}
 		}	
 		if (rem) {
-			this.assets[length] = null;
+			this.assets.remove(length);
 		}
 		return rem;
 	}

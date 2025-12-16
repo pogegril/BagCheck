@@ -6,18 +6,17 @@ package bank;
  */
 public enum Currency {
 	
-	Euro('€', 0),
-	Dollar('$', 1);
+	Euro('€'),
+	Dollar('$');
 
 	private final char SIGN;
-	private final int ID;
+
 	/**
 	 * Builds the Currency enum with its sign
 	 * @param sign - Currency Sign
 	 */
-	Currency(char sign, int id) {
+	Currency(char sign) {
 		this.SIGN = sign;
-		this.ID = id;
 	}
 
 	/**
@@ -33,6 +32,19 @@ public enum Currency {
 	 * @return ID
 	 */
 	public int getID() {
-		return this.ID;
+		for (int i = 0; i < values().length; i++) {
+			if (this == values()[i]) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	/**
+	 * Returns the Currency by its ID
+	 * @return currency
+	 */
+	public static Currency getById(int id) {
+		return values()[id];
 	}
 }

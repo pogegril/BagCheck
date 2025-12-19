@@ -7,6 +7,7 @@ import bank.Currency;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -99,5 +100,29 @@ public class Ledger {
 		LocalDate currentDate = LocalDate.now();
 		LocalDate startDate = currentDate.minusMonths(months);
 		return this.ledger.subMap(startDate, true, currentDate, true);
+	}
+
+	/**
+	 * Returns the assets flow summary since the received date
+	 * @param date - Date to start tracking assets flow
+	 */
+	public HashMap<Account, BigDecimal> getAssetsFlow(LocalDate date) {
+		HashMap<Account, BigDecimal> assetsFlow = new HashMap<Account, BigDecimal>();
+		LocalDate currentDate = LocalDate.now();
+		NavigableMap<LocalDate, ArrayList<Transaction>> transactions = this.ledger.subMap(date, true, currentDate, true);
+
+		for (ArrayList<Transaction> dayRecords : transactions.values()) {
+			for (Transaction transaction : dayRecords) {
+				Account account = transaction.getAccount();
+				// Creates an account flow entry if non-existant
+				if (assetsFlow.get(account) == null) {
+					assetsFlow.put(account, BigDecimal.ZERO);
+				}
+				// Updates transaction's account flow
+				BigDecimal flowCount = assetsFlow.get(account);
+				assetsFlow.replace(account, flowCount.add(transaction.getAmmount()));
+			}
+		}
+		return assetsFlow;
 	}
 }

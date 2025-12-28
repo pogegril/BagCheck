@@ -2,8 +2,8 @@ package bank;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /**
  * Class to handle all assets' details and operations
@@ -11,17 +11,17 @@ import java.util.List;
  */
 public class Assets {
 
-	private List<Account> assets;
+	private NavigableMap<Integer, Account> assets;
 
 	public Assets() {
-		this.assets = new ArrayList<Account>();
+		this.assets = new TreeMap<Integer, Account>();
 	}
 
 	/**
 	 * Returns the array list of assets
 	 * @returns assets
 	 */
-	public List<Account> getAssets() {
+	public NavigableMap<Integer, Account> getAssets() {
 		return this.assets;
 	}
 
@@ -32,13 +32,11 @@ public class Assets {
 	 * @return isAdded?
 	 */
 	public boolean addAccount(Account account) {
-		for (int i = 0; i < this.assets.size(); i++) {
-			if (this.assets.get(i).compare(account)) {
-				return false;
-			}
-		}
-		return this.assets.add(account);
-		
+		if (this.assets.get(account.getID()) == null) {
+			this.assets.put(account.getID(), account);
+			return true;
+		}	
+		return false;
 	}
 
 	/**
@@ -48,7 +46,7 @@ public class Assets {
 	 * @return isRemoved?
 	 */
 	public boolean remAccount(Account account) {
-		return this.assets.remove(account);
+		return this.assets.remove(account.getID()) != null;
 	}
 
 	/**
@@ -59,7 +57,7 @@ public class Assets {
 		BigDecimal[] balance = new BigDecimal[Currency.values().length];
 		Arrays.fill(balance, BigDecimal.ZERO);
 
-		for (Account account : this.assets) {
+		for (Account account : this.assets.values()) {
 			int currencyID = account.getCurrency().getID();
 			balance[currencyID] = balance[currencyID].add(account.getBalance());
 		}
@@ -83,15 +81,15 @@ public class Assets {
 	}
 
 	/**
-	 * Returns the smallest unused unique id
+	 * Returns smallest unused id
 	 * @return id
 	 */
 	public int getUniqueID() {
-		int maxID = -1;
-		for (Account account : this.assets) {
-			maxID = Math.max(maxID, account.getID());
+		int id = 0;
+		while (this.assets.containsKey(id)) {
+			id = this.assets.ceilingKey(id) + 1;
 		}
-		return maxID + 1;
+		return id;
 	}
 
 	/**
@@ -99,12 +97,7 @@ public class Assets {
 	 * @return account
 	 */
 	public Account getAccountByID(int id) {
-		for (Account account : this.assets) {
-			if (account.getID() == id) {
-				return account;
-			}
-		}
-		return null;
+		return this.assets.get(id);
 	}
 }
 

@@ -12,20 +12,20 @@ import java.time.LocalDate;
 public class Transaction {
 
 	private String name, desc;
-	private Account account;
+	private int account_id;
 	private LocalDate date;
 	private BigDecimal amount;
 
 	/**
 	 * Builds a Transaction Instance with all of the pertinent details
 	 * @param name - Transaction's name
-	 * @param account - Transaction's account
+	 * @param account_id - Transaction's account ID
 	 * @param date - Transaction's date
 	 * @param amount - Transaction's value
 	 */
-	public Transaction(String name, Account account, LocalDate date, BigDecimal amount) {
+	public Transaction(String name, int account_id, LocalDate date, BigDecimal amount) {
 		this.name = name;
-		this.account = account;
+		this.account_id = account_id;
 		this.date = date;
 		this.amount = amount;
 	}
@@ -34,14 +34,14 @@ public class Transaction {
 	 * Builds a Transaction Instance with all of the pertinent details
 	 * @param name - Transaction's name
 	 * @param desc - Transaction's optional description
-	 * @param account - Transaction's account
+	 * @param account_id - Transaction's account ID
 	 * @param date - Transaction's date
 	 * @param amount - Transaction's value
 	 */
-	public Transaction(String name, String desc, Account account, LocalDate date, BigDecimal amount) {
+	public Transaction(String name, String desc, int account_id, LocalDate date, BigDecimal amount) {
 		this.name = name;
 		this.desc = desc;
-		this.account = account;
+		this.account_id = account_id;
 		this.date = date;
 		this.amount = amount;
 	}
@@ -67,8 +67,8 @@ public class Transaction {
 	 * Returns transaction's account
 	 * @return account
 	 */
-	public Account getAccount() {
-		return this.account;
+	public int getAccountID() {
+		return this.account_id;
 	}
 
 	/**

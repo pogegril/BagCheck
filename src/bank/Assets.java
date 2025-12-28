@@ -18,22 +18,6 @@ public class Assets {
 	}
 
 	/**
-	 * Returns assets' main currency
-	 * @return mainCurrency
-	 */
-	public Currency getMainCurrency() {
-		BigDecimal[] balance = getBalance();
-		int maxIndex = 0;
-
-		for (int i = 1; i < balance.length; i++) {
-			if (balance[maxIndex].compareTo(balance[i]) == 1) {
-				maxIndex = i;
-			}
-		}
-		return Currency.getById(maxIndex);
-	}
-
-	/**
 	 * Returns the array list of assets
 	 * @returns assets
 	 */
@@ -49,12 +33,12 @@ public class Assets {
 	 */
 	public boolean addAccount(Account account) {
 		for (int i = 0; i < this.assets.size(); i++) {
-			if (this.assets.get(i) == null) {
-				this.assets.set(i, account);
-				return true;
+			if (this.assets.get(i).compare(account)) {
+				return false;
 			}
 		}
-		return false;
+		return this.assets.add(account);
+		
 	}
 
 	/**
@@ -64,22 +48,7 @@ public class Assets {
 	 * @return isRemoved?
 	 */
 	public boolean remAccount(Account account) {
-		boolean rem = false;
-		int length = this.assets.size();
-		for (int i = 0; i < length; i++) {
-			// Compares if the account is the same
-			if (this.assets.get(i).compare(account)) {
-				rem = true;	
-			}
-
-			if (rem && i < length) {
-				this.assets.set(i, this.assets.get(i + 1));
-			}
-		}	
-		if (rem) {
-			this.assets.remove(length);
-		}
-		return rem;
+		return this.assets.remove(account);
 	}
 
 	/**
@@ -97,4 +66,45 @@ public class Assets {
 		return balance;
 	}
 
+	/**
+	 * Returns assets' main currency
+	 * @return mainCurrency
+	 */
+	public Currency getMainCurrency() {
+		BigDecimal[] balance = getBalance();
+		int maxIndex = 0;
+
+		for (int i = 1; i < balance.length; i++) {
+			if (balance[maxIndex].compareTo(balance[i]) == 1) {
+				maxIndex = i;
+			}
+		}
+		return Currency.getById(maxIndex);
+	}
+
+	/**
+	 * Returns the smallest unused unique id
+	 * @return id
+	 */
+	public int getUniqueID() {
+		int maxID = -1;
+		for (Account account : this.assets) {
+			maxID = Math.max(maxID, account.getID());
+		}
+		return maxID + 1;
+	}
+
+	/**
+	 * Returns the account by its ID
+	 * @return account
+	 */
+	public Account getAccountByID(int id) {
+		for (Account account : this.assets) {
+			if (account.getID() == id) {
+				return account;
+			}
+		}
+		return null;
+	}
 }
+

@@ -21,46 +21,6 @@ public class AccountDAO {
 	}
 
 	/**
-	 * Returns the account by it's id
-	 * It should not be used outside of this package since it permits data inaccuracy if used after the initial loading
-	 * @param id - Account id
-	 * @return account
-	 */
-	protected static Account getAccountByID(int id, Connection connection) throws SQLException {
-		PreparedStatement statement = connection.prepareStatement("SELECT * FROM accounts WHERE account_id = ?");
-		statement.setInt(1, id);
-		ResultSet result = statement.executeQuery();
-
-		if (result.next()) {
-			String name = result.getString("name");
-			Currency currency = Currency.getById(result.getInt("currency"));
-			BigDecimal balance = new BigDecimal(result.getString("balance"));
-			Account account = new Account(name, currency);
-			account.transaction(balance);
-			return account;
-		}
-		return null;
-	}
-
-	/**
-	 * Returns account's ID by its name
-	 * Allows implementation of unique indexes in transactions and accounts exclusively on the database level for operations at this level
-	 * It should not be used outside of this package since it permits data inaccuracy if used after the initial loading (yet)
-	 * @param id - Account id
-	 * @return account
-	 */
-	protected static int getIDByName(String name, Connection connection) throws SQLException {
-		PreparedStatement statement = connection.prepareStatement("SELECT * FROM accounts WHERE name = ?");
-		statement.setString(1, name);
-		ResultSet result = statement.executeQuery();
-
-		if (result.next()) {
-			return result.getInt("account_id");
-		}
-		return -1;
-	}
-
-	/**
 	 * Adds an account to the database
 	 * @param account - Account to save
 	 * @return update - Number of database rows updated (Should be 1)
@@ -68,8 +28,9 @@ public class AccountDAO {
 	public int add(Account account) throws SQLException {
 		PreparedStatement statement = this.connection.prepareStatement("INSERT INTO accounts(name, balance, currency) VALUES (?, ?, ?, ?)");
 		statement.setString(1, account.getName());
-		statement.setString(2, account.getBalance().toString());
-		statement.setInt(3, account.getCurrency().getID());
+		statement.setInt(2, account.getID());
+		statement.setString(3, account.getBalance().toString());
+		statement.setInt(4, account.getCurrency().getID());
 		return statement.executeUpdate();
 	}
 
@@ -95,9 +56,10 @@ public class AccountDAO {
 		ArrayList<Account> accounts = new ArrayList<Account>();
 		while (result.next()) {
 			String name = result.getString("name");
+			int id = result.getInt("id");
 			Currency currency = Currency.getById(result.getInt("currency"));
 			BigDecimal balance = new BigDecimal(result.getString("balance"));
-			Account account = new Account(name, currency);
+			Account account = new Account(name, id, currency);
 			account.transaction(balance);
 			accounts.add(account);
 		}

@@ -33,7 +33,7 @@ public class TransactionDAO {
 		PreparedStatement statement = this.connection.prepareStatement("INSERT INTO transactions(name, description, account_id, date, amount) VALUES (?, ?, ?, ?, ?)");
 		statement.setString(1, transaction.getName());
 		statement.setString(2, transaction.getDesc());
-		statement.setInt(3, AccountDAO.getIDByName(transaction.getAccount().getName(), this.connection));
+		statement.setInt(3, transaction.getAccountID());
 		statement.setString(4, transaction.getDate().toString());
 		statement.setString(5, transaction.getAmount().toString());
 		return statement.executeUpdate();
@@ -64,10 +64,10 @@ public class TransactionDAO {
 		if (result.next()) {
 			String name = result.getString("name");
 			String desc = result.getString("description");
-			Account account = AccountDAO.getAccountByID(result.getInt("account_id"), this.connection);
+			int account_id = result.getInt("account_id");
 			LocalDate date = LocalDate.parse(result.getString("date"));
 			BigDecimal amount = new BigDecimal(result.getString("amount"));
-			return new Transaction(name, desc, account, date, amount);
+			return new Transaction(name, desc, account_id, date, amount);
 		}
 		return null;
 	}
@@ -84,10 +84,10 @@ public class TransactionDAO {
 		while (result.next()) {
 			String name = result.getString("name");
 			String desc = result.getString("description");
-			Account account = AccountDAO.getAccountByID(result.getInt("account_id"), this.connection);
+			int account_id = result.getInt("account_id");
 			LocalDate date = LocalDate.parse(result.getString("date"));
 			BigDecimal amount = new BigDecimal(result.getString("amount"));
-			transactions.add(new Transaction(name, desc, account, date, amount));
+			transactions.add(new Transaction(name, desc, account_id, date, amount));
 		}
 		return transactions;
 	}
@@ -106,10 +106,10 @@ public class TransactionDAO {
 		while (result.next()) {
 			String name = result.getString("name");
 			String desc = result.getString("description");
-			Account account = AccountDAO.getAccountByID(result.getInt("account_id"), this.connection);
+			int account_id = result.getInt("account_id");
 			LocalDate date = LocalDate.parse(result.getString("date"));
 			BigDecimal amount = new BigDecimal(result.getString("amount"));
-			transactions.add(new Transaction(name, desc, account, date, amount));
+			transactions.add(new Transaction(name, desc, account_id, date, amount));
 		}
 		return transactions;
 	}

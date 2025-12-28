@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 public class Account {
 
 	private String name;
+	private final int ID;
 	private BigDecimal balance;
 	private Currency currency;
 
@@ -17,8 +18,9 @@ public class Account {
 	 * @param name - Account's identification
 	 * @param currency - Account's currency
 	 */
-	public Account(String name, Currency currency) {
+	public Account(String name, int id, Currency currency) {
 		this.name = name;
+		this.ID = id;
 		this.balance = new BigDecimal(0);
 		this.currency = currency;
 	}
@@ -31,6 +33,13 @@ public class Account {
 		return this.name;
 	}
 
+	/**
+	 * Returns the account's unique id
+	 * @return ID
+	 */
+	public int getID() {
+		return this.ID;
+	}
 	/**
 	 * Returns the account's currency
 	 * @return currency
@@ -61,6 +70,6 @@ public class Account {
 	 * @return isEqual?
 	 */
 	public boolean compare(Account account) {
-		return this.name.equals(account.getName());
+		return this.ID == account.getID();
 	}
 }

@@ -59,7 +59,7 @@ public class Ledger {
 			return false;
 		}
 
-		Account account = transaction.getAccount();
+		Account account = this.assets.getAccountByID(transaction.getAccountID());
 		account.transaction(transaction.getAmount());
 
 		dateRecords.add(transaction);
@@ -75,7 +75,7 @@ public class Ledger {
 	public boolean removeTransaction(Transaction transaction) {
 		ArrayList<Transaction> dateRecords = this.ledger.get(transaction.getDate());
 		if (dateRecords != null && dateRecords.remove(transaction)) {
-			Account account = transaction.getAccount();
+			Account account = this.assets.getAccountByID(transaction.getAccountID());
 			BigDecimal revertTransaction = transaction.getAmount().negate();
 			account.transaction(revertTransaction);
 
@@ -113,7 +113,7 @@ public class Ledger {
 
 		for (ArrayList<Transaction> dayRecords : transactions.values()) {
 			for (Transaction transaction : dayRecords) {
-				Account account = transaction.getAccount();
+				Account account = this.assets.getAccountByID(transaction.getAccountID());
 				// Creates an account flow entry if non-existant
 				if (assetsFlow.get(account) == null) {
 					assetsFlow.put(account, BigDecimal.ZERO);

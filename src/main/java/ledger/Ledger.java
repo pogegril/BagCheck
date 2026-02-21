@@ -1,15 +1,16 @@
 package ledger;
 
-import bank.Account;
-import bank.Assets;
-import bank.Currency;
-
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+
+import bank.Account;
+import bank.Assets;
+import sql.Database;
 
 /**
  * Class to mantain an orderly Ledger
@@ -49,8 +50,9 @@ public class Ledger {
 	/**
 	 * Adds a new transaction to the ledger if it's not a duplicate
 	 * @param transaction - New transaction to track
+	 * @return isAdded?
 	 */
-	public boolean addTransaction(Transaction transaction) {
+	public boolean addTransaction(Transaction transaction) throws SQLException {
 		LocalDate date = transaction.getDate();
 		this.ledger.computeIfAbsent(date, newRecords -> new ArrayList<Transaction>());
 
@@ -59,26 +61,46 @@ public class Ledger {
 			return false;
 		}
 
+		Database.addTransaction(transaction);
 		Account account = this.assets.getAccountByID(transaction.getAccountID());
 		account.transaction(transaction.getAmount());
+		Database.updateBalance(account.getID(), account.getBalance());
 
 		dateRecords.add(transaction);
 		return true;
+	}
 
-		
+	/**
+	 * Loads an account into the ledger
+	 * To be used specifically to load an existing account since it doesnt update the assets balance
+	 * @param transaction - Transaction to load
+	 * @return isAdded?
+	 */
+	public boolean loadTransaction(Transaction transaction) {
+		LocalDate date = transaction.getDate();
+		this.ledger.computeIfAbsent(date, newRecords -> new ArrayList<Transaction>());
+
+		ArrayList<Transaction> dateRecords = this.ledger.get(date);
+		if (dateRecords.contains(transaction)) {
+			return false;
+		}
+		dateRecords.add(transaction);
+		return true;
 	}
 
 	/**
 	 * Removes the transaction from the ledger
 	 * @param transaction - Transaction to remove
+	 * @return isRemoved?
 	 */
-	public boolean removeTransaction(Transaction transaction) {
+	public boolean removeTransaction(Transaction transaction) throws SQLException {
+		Database.remTransaction(transaction.getID());
 		ArrayList<Transaction> dateRecords = this.ledger.get(transaction.getDate());
 		if (dateRecords != null && dateRecords.remove(transaction)) {
 			Account account = this.assets.getAccountByID(transaction.getAccountID());
 			BigDecimal revertTransaction = transaction.getAmount().negate();
 			account.transaction(revertTransaction);
-
+			Database.updateBalance(account.getID(), account.getBalance());
 			return true;
 		}
 		return false;

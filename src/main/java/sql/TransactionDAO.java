@@ -9,7 +9,6 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import bank.Account;
 import ledger.Transaction;
 
 /**
@@ -27,16 +26,27 @@ public class TransactionDAO {
 	/**
 	 * Adds a transaction to the database
 	 * @param transaction - Transaction to save
-	 * @return update - Number of database rows updated (Should be 1)
+	 * @return id - Transaction's assigned id
 	 */
-	public int add(Transaction transaction) throws SQLException {
-		PreparedStatement statement = this.connection.prepareStatement("INSERT INTO transactions(name, description, account_id, date, amount) VALUES (?, ?, ?, ?, ?)");
-		statement.setString(1, transaction.getName());
-		statement.setString(2, transaction.getDesc());
-		statement.setInt(3, transaction.getAccountID());
-		statement.setString(4, transaction.getDate().toString());
-		statement.setString(5, transaction.getAmount().toString());
-		return statement.executeUpdate();
+	public void add(Transaction transaction) throws SQLException {
+		String sqlStatement = "INSERT INTO transactions(name, description, account_id, date, amount) VALUES (?, ?, ?, ?, ?)";
+
+		try (PreparedStatement statement = this.connection.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS)) {
+			statement.setString(1, transaction.getName());
+			statement.setString(2, transaction.getDesc());
+			statement.setInt(3, transaction.getAccountID());
+			statement.setString(4, transaction.getDate().toString());
+			statement.setBigDecimal(5, transaction.getAmount());
+			statement.executeUpdate();
+
+			try (ResultSet id = statement.getGeneratedKeys()) {
+				if (id.next()) {
+					transaction.setID(id.getInt(1));	
+				} else {
+					throw new  SQLException("Failed to retrieve transaction's auto-generated ID.");
+				}
+			}
+		}
 	}
 
 	/**
@@ -45,31 +55,37 @@ public class TransactionDAO {
 	 * @return update - Number of database rows update (Should be 0 or 1)
 	 */
 	public int delete(int id) throws SQLException {
-		PreparedStatement statement = this.connection.prepareStatement("DELETE FROM transactions WHERE transaction_id = ?");
-		statement.setInt(1, id);
-		return statement.executeUpdate();
+		try (PreparedStatement statement = this.connection.prepareStatement("DELETE FROM transactions WHERE id = ?")){
+			statement.setInt(1, id);
+			return statement.executeUpdate();
+		}
 	}
 
 	/**
 	 * Returns a transaction by its id
-	 * Returns null if not found
 	 * @param id - Transaction id
 	 * @return transaction
 	 */
 	public Transaction getTransaction(int id) throws SQLException {
-		PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM transactions WHERE transaction_id = ?");
-		statement.setInt(1, id);
-		ResultSet result = statement.executeQuery();
+		try (PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM transactions WHERE id = ?")) {
+			statement.setInt(1, id);
 
-		if (result.next()) {
-			String name = result.getString("name");
-			String desc = result.getString("description");
-			int account_id = result.getInt("account_id");
-			LocalDate date = LocalDate.parse(result.getString("date"));
-			BigDecimal amount = new BigDecimal(result.getString("amount"));
-			return new Transaction(name, desc, account_id, date, amount);
+			try (ResultSet result = statement.executeQuery()) {
+				if (result.next()) {
+					String name = result.getString("name");
+					String desc = result.getString("description");
+					int account_id = result.getInt("account_id");
+					int transaction_id = result.getInt("id");
+					LocalDate date = LocalDate.parse(result.getString("date"));
+					BigDecimal amount = result.getBigDecimal("amount");
+					Transaction transaction = new Transaction(name, desc, account_id, date, amount);
+					transaction.setID(transaction_id);
+					return transaction;
+				} else {
+					throw new IllegalStateException("No transaction found with the received ID.");
+				}
+			}
 		}
-		return null;
 	}
 
 	/**
@@ -77,19 +93,24 @@ public class TransactionDAO {
 	 * @return transactions
 	 */
 	public ArrayList<Transaction> getTransactions() throws SQLException {
-		PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM transactions");
-		ResultSet result = statement.executeQuery();
+		try (PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM transactions")) {
+			try (ResultSet result = statement.executeQuery()) {
 
-		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-		while (result.next()) {
-			String name = result.getString("name");
-			String desc = result.getString("description");
-			int account_id = result.getInt("account_id");
-			LocalDate date = LocalDate.parse(result.getString("date"));
-			BigDecimal amount = new BigDecimal(result.getString("amount"));
-			transactions.add(new Transaction(name, desc, account_id, date, amount));
+				ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+				while (result.next()) {
+					String name = result.getString("name");
+					String desc = result.getString("description");
+					int account_id = result.getInt("account_id");
+					int transaction_id = result.getInt("id");
+					LocalDate date = LocalDate.parse(result.getString("date"));
+					BigDecimal amount = result.getBigDecimal("amount");
+					Transaction transaction = new Transaction(name, desc, account_id, date, amount);
+					transaction.setID(transaction_id);
+					transactions.add(transaction);
+				}
+				return transactions;
+			}
 		}
-		return transactions;
 	}
 
 	/**
@@ -98,19 +119,24 @@ public class TransactionDAO {
 	 * @return transactions
 	 */
 	public ArrayList<Transaction> getTransactions(LocalDate startDate) throws SQLException {
-		PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM transactions WHERE date >= ?");
-		statement.setString(1, startDate.toString());
-		ResultSet result = statement.executeQuery();
+		try (PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM transactions WHERE date >= ?")) {
+			statement.setString(1, startDate.toString());
 
-		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-		while (result.next()) {
-			String name = result.getString("name");
-			String desc = result.getString("description");
-			int account_id = result.getInt("account_id");
-			LocalDate date = LocalDate.parse(result.getString("date"));
-			BigDecimal amount = new BigDecimal(result.getString("amount"));
-			transactions.add(new Transaction(name, desc, account_id, date, amount));
+			try (ResultSet result = statement.executeQuery()) {
+				ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+				while (result.next()) {
+					String name = result.getString("name");
+					String desc = result.getString("description");
+					int account_id = result.getInt("account_id");
+					int transaction_id = result.getInt("id");
+					LocalDate date = LocalDate.parse(result.getString("date"));
+					BigDecimal amount = result.getBigDecimal("amount");
+					Transaction transaction = new Transaction(name, desc, account_id, date, amount);
+					transaction.setID(transaction_id);
+					transactions.add(transaction);
+				}
+				return transactions;
+			}
 		}
-		return transactions;
 	}
 }

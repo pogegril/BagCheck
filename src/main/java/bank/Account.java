@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 public class Account {
 
 	private String name;
-	private final int ID;
+	private int ID;
 	private BigDecimal balance;
 	private Currency currency;
 
@@ -18,9 +18,9 @@ public class Account {
 	 * @param name - Account's identification
 	 * @param currency - Account's currency
 	 */
-	public Account(String name, int id, Currency currency) {
-		this.name = name;
-		this.ID = id;
+	public Account(String name, Currency currency) {
+		if (name == null || name.length() == 0) {throw new IllegalArgumentException("The Account's name must not be empty.");}
+		this.name = name.trim();
 		this.balance = new BigDecimal(0);
 		this.currency = currency;
 	}
@@ -40,6 +40,15 @@ public class Account {
 	public int getID() {
 		return this.ID;
 	}
+
+	/**
+	 * Assigns the database's assigned unique ID
+	 * @param id
+	 */
+	public void setID(int id) {
+		this.ID = id;
+	}
+
 	/**
 	 * Returns the account's currency
 	 * @return currency
@@ -70,6 +79,6 @@ public class Account {
 	 * @return isEqual?
 	 */
 	public boolean compare(Account account) {
-		return this.ID == account.getID();
+		return this.ID == account.getID() || this.name.equals(account.getName());
 	}
 }

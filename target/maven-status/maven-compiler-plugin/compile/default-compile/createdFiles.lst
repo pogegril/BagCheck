@@ -1,3 +1,4 @@
+sql/Database.class
 bank/Assets.class
 sql/AccountDAO.class
 bank/Account.class

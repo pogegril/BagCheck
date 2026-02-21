@@ -44,7 +44,15 @@ public enum Currency {
 	 * Returns the Currency by its ID
 	 * @return currency
 	 */
-	public static Currency getById(int id) {
+	public static Currency getByID(int id) {
 		return values()[id];
+	}
+
+	/**
+	 * Returns the Currency's sign by its ID
+	 * @return sign
+	 */
+	public static char getSignByID(int id) {
+		return values()[id].getSign();
 	}
 }

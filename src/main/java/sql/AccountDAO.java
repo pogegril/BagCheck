@@ -5,12 +5,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import bank.Account;
 import bank.Currency;
-import ledger.Transaction;
 
 public class AccountDAO {
 
@@ -23,15 +22,23 @@ public class AccountDAO {
 	/**
 	 * Adds an account to the database
 	 * @param account - Account to save
-	 * @return update - Number of database rows updated (Should be 1)
 	 */
-	public int add(Account account) throws SQLException {
-		PreparedStatement statement = this.connection.prepareStatement("INSERT INTO accounts(name, balance, currency) VALUES (?, ?, ?, ?)");
-		statement.setString(1, account.getName());
-		statement.setInt(2, account.getID());
-		statement.setString(3, account.getBalance().toString());
-		statement.setInt(4, account.getCurrency().getID());
-		return statement.executeUpdate();
+	public void add(Account account) throws SQLException {
+		String sqlStatement = "INSERT INTO accounts(name, balance, currency) VALUES (?, ?, ?)";
+		try (PreparedStatement statement = this.connection.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS)) {
+			statement.setString(1, account.getName());
+			statement.setBigDecimal(2, account.getBalance());
+			statement.setInt(3, account.getCurrency().getID());
+			statement.executeUpdate();
+
+			try (ResultSet id = statement.getGeneratedKeys()) {
+				if (id.next()) {
+					account.setID(id.getInt(1));	
+				} else {
+					throw new  SQLException("Failed to retrieve account's auto-generated ID.");
+				}
+			}
+		}
 	}
 
 	/**
@@ -40,9 +47,23 @@ public class AccountDAO {
 	 * @return update - Number of database rows update (Should be 0 or 1)
 	 */
 	public int delete(int id) throws SQLException {
-		PreparedStatement statement = this.connection.prepareStatement("DELETE FROM accounts WHERE account_id = ?");
-		statement.setInt(1, id);
-		return statement.executeUpdate();
+		try (PreparedStatement statement = this.connection.prepareStatement("DELETE FROM accounts WHERE account_id = ?")) {
+			statement.setInt(1, id);
+			return statement.executeUpdate();
+		}
+	}
+
+	/**
+	 * Updates the database's account entry's balance
+	 * @param id - Account ID
+	 * @param balance - Updated balance
+	 */
+	public void updateBalance(int id, BigDecimal balance) throws SQLException {
+		try (PreparedStatement statement = this.connection.prepareStatement("UPDATE accounts SET balance = ? WHERE id = ?")) {
+			statement.setBigDecimal(1, balance);
+			statement.setInt(2, id);
+			statement.executeUpdate();
+		}
 	}
 
 	/**
@@ -50,20 +71,23 @@ public class AccountDAO {
 	 * @return accounts
 	 */
 	public ArrayList<Account> getAccounts() throws SQLException {
-		PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM accounts");
-		ResultSet result = statement.executeQuery();
+		try (PreparedStatement statement = this.connection.prepareStatement("SELECT * FROM accounts")) {
+			try (ResultSet result = statement.executeQuery()) {
 
-		ArrayList<Account> accounts = new ArrayList<Account>();
-		while (result.next()) {
-			String name = result.getString("name");
-			int id = result.getInt("id");
-			Currency currency = Currency.getById(result.getInt("currency"));
-			BigDecimal balance = new BigDecimal(result.getString("balance"));
-			Account account = new Account(name, id, currency);
-			account.transaction(balance);
-			accounts.add(account);
+				ArrayList<Account> accounts = new ArrayList<Account>();
+				while (result.next()) {
+					String name = result.getString("name");
+					int id = result.getInt("id");
+					Currency currency = Currency.getByID(result.getInt("currency"));
+					BigDecimal balance = result.getBigDecimal("balance");
+					Account account = new Account(name, currency);
+					account.setID(id);
+					account.transaction(balance);
+					accounts.add(account);
+				}
+				return accounts;
+			}	
 		}
-		return accounts;
 	}
 }
 

@@ -1,9 +1,13 @@
 package bank;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+
+import sql.Database;
 
 /**
  * Class to handle all assets' details and operations
@@ -18,25 +22,28 @@ public class Assets {
 	}
 
 	/**
-	 * Returns the array list of assets
+	 * Returns a collection view of the assets
 	 * @returns assets
 	 */
-	public NavigableMap<Integer, Account> getAssets() {
-		return this.assets;
+	public Collection<Account> getAssets() {
+		return this.assets.values();
 	}
 
 	/**
-	 * Attempts to add the received account
+	 * Attempts to add an account with the received details if not present already
 	 * Returns if the account was added successfully
 	 * @param account - Account to add
 	 * @return isAdded?
 	 */
-	public boolean addAccount(Account account) {
-		if (this.assets.get(account.getID()) == null) {
-			this.assets.put(account.getID(), account);
-			return true;
-		}	
-		return false;
+	public boolean addAccount(Account account) throws SQLException {
+		for (Account acc : this.assets.values()) {
+			if (account.compare(acc) == true) {
+				return false;
+			}
+		}
+		Database.addAccount(account);
+		this.assets.put(account.getID(), account);
+		return true;
 	}
 
 	/**
@@ -45,7 +52,8 @@ public class Assets {
 	 * @param account - Account to remove
 	 * @return isRemoved?
 	 */
-	public boolean remAccount(Account account) {
+	public boolean remAccount(Account account) throws SQLException {
+		Database.remAccount(account.getID());
 		return this.assets.remove(account.getID()) != null;
 	}
 
@@ -77,19 +85,7 @@ public class Assets {
 				maxIndex = i;
 			}
 		}
-		return Currency.getById(maxIndex);
-	}
-
-	/**
-	 * Returns smallest unused id
-	 * @return id
-	 */
-	public int getUniqueID() {
-		int id = 0;
-		while (this.assets.containsKey(id)) {
-			id = this.assets.ceilingKey(id) + 1;
-		}
-		return id;
+		return Currency.getByID(maxIndex);
 	}
 
 	/**

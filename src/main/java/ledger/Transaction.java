@@ -1,7 +1,5 @@
 package ledger;
 
-import bank.Account;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -12,7 +10,7 @@ import java.time.LocalDate;
 public class Transaction {
 
 	private String name, desc;
-	private int account_id;
+	private int account_id, ID;
 	private LocalDate date;
 	private BigDecimal amount;
 
@@ -57,7 +55,7 @@ public class Transaction {
 	/**
 	 * Returns transaction's optional description
 	 * Returns null if a description wasn't given
-	 * @return name
+	 * @return description
 	 */
 	public String getDesc() {
 		return this.desc;
@@ -69,6 +67,22 @@ public class Transaction {
 	 */
 	public int getAccountID() {
 		return this.account_id;
+	}
+
+	/**
+	 * Returns transaction's unique ID
+	 * @return ID
+	 */
+	public int getID() {
+		return this.ID;
+	}
+
+	/**
+	 * Sets the database's assigned transaction id
+	 * @param id - Database ID
+	 */
+	public void setID(int id) {
+		this.ID = id;
 	}
 
 	/**

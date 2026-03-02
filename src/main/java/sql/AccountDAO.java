@@ -11,10 +11,18 @@ import java.util.ArrayList;
 import bank.Account;
 import bank.Currency;
 
+/**
+ * Handles account operations between the database and the program
+ * @author pogegril
+ */
 public class AccountDAO {
 
 	private Connection connection;
 
+	/**
+	 * Accounts Data Access Object
+	 * @param connection - JDBC connection
+	 */
 	public AccountDAO(Connection connection) {
 		this.connection = connection;
 	}
@@ -47,7 +55,7 @@ public class AccountDAO {
 	 * @return update - Number of database rows update (Should be 0 or 1)
 	 */
 	public int delete(int id) throws SQLException {
-		try (PreparedStatement statement = this.connection.prepareStatement("DELETE FROM accounts WHERE account_id = ?")) {
+		try (PreparedStatement statement = this.connection.prepareStatement("DELETE FROM accounts WHERE id = ?")) {
 			statement.setInt(1, id);
 			return statement.executeUpdate();
 		}

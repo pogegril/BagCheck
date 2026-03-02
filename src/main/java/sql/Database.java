@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 
 import bank.Account;
 import bank.Assets;
@@ -22,7 +23,7 @@ import ledger.Transaction;
  */
 public class Database {
 
-	private static final String DB_URL = "jdbc:sqlite:database.db";
+	private static final String DB_URL = "jdbc:sqlite:" + new java.io.File("bagcheck.db").getAbsolutePath();
 	private static final String SCHEMA_PATH = "db/database.sql";
 
 	/**
@@ -36,14 +37,9 @@ public class Database {
 	/**
 	 * Static method to initialize the program's database
 	 */
-	public static void initialize() {
-		File dbFile = new File("database.db");
-		boolean exists = dbFile.exists();
-		
+	public static void initialize() {		
 		try (Connection connection = getConnection()) {
-			if (!exists) {
 				createDatabase(connection);
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -91,12 +87,37 @@ public class Database {
 			TransactionDAO transDao = new TransactionDAO(connection);
 
 			for (Account account : accDao.getAccounts()) {
-				if (!assets.addAccount(account)) {
+				if (!assets.loadAccount(account)) {
 					throw new IllegalStateException("Duplicate account entry error.");
 				}
 			}
 
 			for (Transaction transaction : transDao.getTransactions()) {
+				if (!ledger.loadTransaction(transaction)) {
+					throw new IllegalStateException("Duplicate transaction entry error.");
+				}
+			}
+		}
+	}
+
+	/**
+	 * Loads the received ledger with the database's contents
+	 * Loads only transactions since the received date
+	 * @param ledger - Empty ledger
+	 */
+	public static void loadLedger(Ledger ledger, LocalDate date) throws SQLException {
+		Assets assets = ledger.getAssets();
+		try (Connection connection = getConnection()) {
+			AccountDAO accDao = new AccountDAO(connection);
+			TransactionDAO transDao = new TransactionDAO(connection);
+
+			for (Account account : accDao.getAccounts()) {
+				if (!assets.loadAccount(account)) {
+					throw new IllegalStateException("Duplicate account entry error.");
+				}
+			}
+
+			for (Transaction transaction : transDao.getTransactions(date)) {
 				if (!ledger.loadTransaction(transaction)) {
 					throw new IllegalStateException("Duplicate transaction entry error.");
 				}

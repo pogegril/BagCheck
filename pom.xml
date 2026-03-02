@@ -3,7 +3,7 @@
 	<groupId>com.bagcheck</groupId>
 	<artifactId>bagcheck</artifactId>
 	<description>Personal finances tracking app</description>
-	<version>Unfinished</version>
+	<version>0.1</version>
 	<url>https://github.com/pogegril/BagCheck</url>
 
 	<properties>
@@ -32,7 +32,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>3.6.3</version>
 				<configuration>
-					<mainClass>main.BagTest</mainClass>
+					<mainClass>main.BagCheck</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>

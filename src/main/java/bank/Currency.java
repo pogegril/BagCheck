@@ -6,8 +6,18 @@ package bank;
  */
 public enum Currency {
 	
+	// WARNING
+	// When altering the Currency's code never re-order the currencies since their ID
+	// is order dependant.
+	// To add new currencies add them at the end of the list
 	Euro('€'),
-	Dollar('$');
+	Dollar('$'),
+	Pount('£'),
+	Yen('¥'),
+	Yuan('¥'),
+	Rupee('₹'),
+	Won('₩'),
+	Ruble('₽');
 
 	private final char SIGN;
 
@@ -32,12 +42,7 @@ public enum Currency {
 	 * @return ID
 	 */
 	public int getID() {
-		for (int i = 0; i < values().length; i++) {
-			if (this == values()[i]) {
-				return i;
-			}
-		}
-		return -1;
+		return this.ordinal();
 	}
 
 	/**

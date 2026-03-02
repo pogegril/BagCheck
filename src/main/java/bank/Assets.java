@@ -47,6 +47,22 @@ public class Assets {
 	}
 
 	/**
+	 * Attempts to load an existing account from the database with the received details if not present already
+	 * Returns if the account was added successfully
+	 * @param account - Account to add
+	 * @return isAdded?
+	 */
+	public boolean loadAccount(Account account) throws SQLException {
+		for (Account acc : this.assets.values()) {
+			if (account.compare(acc) == true) {
+				return false;
+			}
+		}
+		this.assets.put(account.getID(), account);
+		return true;
+	}
+
+	/**
 	 * Removes the received account if found
 	 * Returns if the account was removed successfully
 	 * @param account - Account to remove
@@ -81,7 +97,7 @@ public class Assets {
 		int maxIndex = 0;
 
 		for (int i = 1; i < balance.length; i++) {
-			if (balance[maxIndex].compareTo(balance[i]) == 1) {
+			if (balance[maxIndex].compareTo(balance[i]) < 0) {
 				maxIndex = i;
 			}
 		}

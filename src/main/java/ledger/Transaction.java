@@ -100,4 +100,13 @@ public class Transaction {
 	public BigDecimal getAmount() {
 		return this.amount;
 	}
+
+	/**
+	 * Returns a String with the transaction's info to be displayed
+	 * @return string
+	 */
+	@Override
+	public String toString() {
+		return "[" + this.date.getDayOfMonth() + "/" + this.date.getMonthValue() + "/" + this.date.getYear() + "] " + getName();
+	}
 }

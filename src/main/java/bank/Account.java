@@ -1,6 +1,7 @@
 package bank;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * Class to handle an account's details and operations
@@ -80,5 +81,15 @@ public class Account {
 	 */
 	public boolean compare(Account account) {
 		return this.ID == account.getID() || this.name.equals(account.getName());
+	}
+
+	/**
+	 * Returns a String with the account's info to be displayed
+	 * @return string
+	 */
+	@Override
+	public String toString() {
+		BigDecimal roundBalance = getBalance().setScale(2, RoundingMode.HALF_UP);
+		return "[" + roundBalance.toString() + " " + getCurrency().getSign() + "] " + getName();
 	}
 }

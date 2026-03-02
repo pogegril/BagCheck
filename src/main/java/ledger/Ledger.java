@@ -4,12 +4,15 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import bank.Account;
 import bank.Assets;
+import bank.Currency;
 import sql.Database;
 
 /**
@@ -46,6 +49,33 @@ public class Ledger {
 	public NavigableMap<LocalDate, ArrayList<Transaction>> getLedger() {
 		return this.ledger;
 	}
+
+	/**
+	 * Removes an account from the ledger's assets
+	 * Removes all transactions with this ID
+	 * @param account - Account to remove
+	 */
+	public void removeAccount(Account account) throws SQLException {
+		int id = account.getID();
+
+		// Filter transactions to remove
+		List<Transaction> toRemove = new ArrayList<>();
+		for (ArrayList<Transaction> dayRecords : this.ledger.values()) {
+			for (Transaction transaction : dayRecords) {
+				if (transaction.getAccountID() == account.getID()) {
+					toRemove.add(transaction);
+				}
+			}
+		}
+
+		// Remove transactons from account to be removed
+		for (Transaction transaction : toRemove) {
+			removeTransaction(transaction);
+		}
+
+		this.assets.remAccount(account);
+	}
+
 
 	/**
 	 * Adds a new transaction to the ledger if it's not a duplicate
@@ -97,6 +127,10 @@ public class Ledger {
 		Database.remTransaction(transaction.getID());
 		ArrayList<Transaction> dateRecords = this.ledger.get(transaction.getDate());
 		if (dateRecords != null && dateRecords.remove(transaction)) {
+			// Cleans dateRecords if this was the last transaction present
+			if (dateRecords.isEmpty()) {
+				this.ledger.remove(transaction.getDate());
+			}
 			Account account = this.assets.getAccountByID(transaction.getAccountID());
 			BigDecimal revertTransaction = transaction.getAmount().negate();
 			account.transaction(revertTransaction);
@@ -125,24 +159,20 @@ public class Ledger {
 	}
 
 	/**
-	 * Returns the assets flow summary since the received date
+	 * Returns the assets flow summary by currency since the received date
 	 * @param date - Date to start tracking assets flow
 	 */
-	public HashMap<Account, BigDecimal> getAssetsFlow(LocalDate date) {
-		HashMap<Account, BigDecimal> assetsFlow = new HashMap<Account, BigDecimal>();
+	public BigDecimal[] getAssetsFlow(LocalDate date) {
+		BigDecimal[] assetsFlow = new BigDecimal[Currency.values().length];
+		Arrays.fill(assetsFlow, BigDecimal.ZERO);
+
 		LocalDate currentDate = LocalDate.now();
 		NavigableMap<LocalDate, ArrayList<Transaction>> transactions = this.ledger.subMap(date, true, currentDate, true);
 
 		for (ArrayList<Transaction> dayRecords : transactions.values()) {
 			for (Transaction transaction : dayRecords) {
 				Account account = this.assets.getAccountByID(transaction.getAccountID());
-				// Creates an account flow entry if non-existant
-				if (assetsFlow.get(account) == null) {
-					assetsFlow.put(account, BigDecimal.ZERO);
-				}
-				// Updates transaction's account flow
-				BigDecimal flowCount = assetsFlow.get(account);
-				assetsFlow.replace(account, flowCount.add(transaction.getAmount()));
+				assetsFlow[account.getCurrency().getID()] = assetsFlow[account.getCurrency().getID()].add(transaction.getAmount());
 			}
 		}
 		return assetsFlow;

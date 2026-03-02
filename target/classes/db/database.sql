@@ -1,11 +1,11 @@
-CREATE TABLE accounts(
+CREATE TABLE IF NOT EXISTS accounts(
 	name TEXT NOT NULL,
 	id INTEGER PRIMARY KEY,
 	balance NUMERIC NOT NULL,
 	currency INTEGER NOT NULL
 );
 
-CREATE TABLE transactions(
+CREATE TABLE IF NOT EXISTS transactions(
 	name TEXT NOT NULL,
 	description TEXT,
 	account_id INTEGER NOT NULL,

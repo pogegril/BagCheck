@@ -19,6 +19,10 @@ public class TransactionDAO {
 
 	private Connection connection;
 
+	/**
+	 * Transactions Data Access Object
+	 * @param connection - JDBC connection
+	 */
 	public TransactionDAO(Connection connection) {
 		this.connection = connection;
 	}
@@ -78,9 +82,15 @@ public class TransactionDAO {
 					int transaction_id = result.getInt("id");
 					LocalDate date = LocalDate.parse(result.getString("date"));
 					BigDecimal amount = result.getBigDecimal("amount");
-					Transaction transaction = new Transaction(name, desc, account_id, date, amount);
-					transaction.setID(transaction_id);
-					return transaction;
+					if (desc == null) {
+						Transaction transaction = new Transaction(name, account_id, date, amount);
+						transaction.setID(transaction_id);
+						return transaction;
+					} else {
+						Transaction transaction = new Transaction(name, desc, account_id, date, amount);
+						transaction.setID(transaction_id);
+						return transaction;
+					}
 				} else {
 					throw new IllegalStateException("No transaction found with the received ID.");
 				}
@@ -104,9 +114,15 @@ public class TransactionDAO {
 					int transaction_id = result.getInt("id");
 					LocalDate date = LocalDate.parse(result.getString("date"));
 					BigDecimal amount = result.getBigDecimal("amount");
-					Transaction transaction = new Transaction(name, desc, account_id, date, amount);
-					transaction.setID(transaction_id);
-					transactions.add(transaction);
+					if (desc == null) {
+						Transaction transaction = new Transaction(name, account_id, date, amount);
+						transaction.setID(transaction_id);
+						transactions.add(transaction);
+					} else {
+						Transaction transaction = new Transaction(name, desc, account_id, date, amount);
+						transaction.setID(transaction_id);
+						transactions.add(transaction);
+					}
 				}
 				return transactions;
 			}

@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -23,8 +26,22 @@ import ledger.Transaction;
  */
 public class Database {
 
-	private static final String DB_URL = "jdbc:sqlite:" + new java.io.File("bagcheck.db").getAbsolutePath();
+	private static final Path DB_PATH;
+	private static final String DB_URL;
 	private static final String SCHEMA_PATH = "db/database.sql";
+
+	static {
+		try {
+			Path directory = Paths.get(System.getProperty("user.home"), ".bagcheck");
+			Files.createDirectories(directory);
+
+			DB_PATH = directory.resolve("bagcheck.db");
+
+			DB_URL = "jdbc:sqlite:" + DB_PATH.toString();
+		} catch (IOException e) {
+			throw new RuntimeException("Failed to access the database directory.", e);
+		}
+	}
 
 	/**
 	 * Returns JDBC's connection

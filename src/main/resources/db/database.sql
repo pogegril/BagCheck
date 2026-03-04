@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS accounts(
 CREATE TABLE IF NOT EXISTS transactions(
 	name TEXT NOT NULL,
 	description TEXT,
+	tag TEXT NOT NULL,
 	account_id INTEGER NOT NULL,
 	id INTEGER PRIMARY KEY,
 	date TEXT NOT NULL,

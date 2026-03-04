@@ -33,14 +33,15 @@ public class TransactionDAO {
 	 * @return id - Transaction's assigned id
 	 */
 	public void add(Transaction transaction) throws SQLException {
-		String sqlStatement = "INSERT INTO transactions(name, description, account_id, date, amount) VALUES (?, ?, ?, ?, ?)";
+		String sqlStatement = "INSERT INTO transactions(name, description, tag, account_id, date, amount) VALUES (?, ?, ?, ?, ?, ?)";
 
 		try (PreparedStatement statement = this.connection.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS)) {
 			statement.setString(1, transaction.getName());
 			statement.setString(2, transaction.getDesc());
-			statement.setInt(3, transaction.getAccountID());
-			statement.setString(4, transaction.getDate().toString());
-			statement.setBigDecimal(5, transaction.getAmount());
+			statement.setString(3, transaction.getTag());
+			statement.setInt(4, transaction.getAccountID());
+			statement.setString(5, transaction.getDate().toString());
+			statement.setBigDecimal(6, transaction.getAmount());
 			statement.executeUpdate();
 
 			try (ResultSet id = statement.getGeneratedKeys()) {
@@ -78,16 +79,17 @@ public class TransactionDAO {
 				if (result.next()) {
 					String name = result.getString("name");
 					String desc = result.getString("description");
+					String tag = result.getString("tag");
 					int account_id = result.getInt("account_id");
 					int transaction_id = result.getInt("id");
 					LocalDate date = LocalDate.parse(result.getString("date"));
 					BigDecimal amount = result.getBigDecimal("amount");
 					if (desc == null) {
-						Transaction transaction = new Transaction(name, account_id, date, amount);
+						Transaction transaction = new Transaction(name, tag, account_id, date, amount);
 						transaction.setID(transaction_id);
 						return transaction;
 					} else {
-						Transaction transaction = new Transaction(name, desc, account_id, date, amount);
+						Transaction transaction = new Transaction(name, desc, tag, account_id, date, amount);
 						transaction.setID(transaction_id);
 						return transaction;
 					}
@@ -110,16 +112,17 @@ public class TransactionDAO {
 				while (result.next()) {
 					String name = result.getString("name");
 					String desc = result.getString("description");
+					String tag = result.getString("tag");
 					int account_id = result.getInt("account_id");
 					int transaction_id = result.getInt("id");
 					LocalDate date = LocalDate.parse(result.getString("date"));
 					BigDecimal amount = result.getBigDecimal("amount");
 					if (desc == null) {
-						Transaction transaction = new Transaction(name, account_id, date, amount);
+						Transaction transaction = new Transaction(name, tag, account_id, date, amount);
 						transaction.setID(transaction_id);
 						transactions.add(transaction);
 					} else {
-						Transaction transaction = new Transaction(name, desc, account_id, date, amount);
+						Transaction transaction = new Transaction(name, desc, tag, account_id, date, amount);
 						transaction.setID(transaction_id);
 						transactions.add(transaction);
 					}

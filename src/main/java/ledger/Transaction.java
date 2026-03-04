@@ -9,7 +9,7 @@ import java.time.LocalDate;
  */
 public class Transaction {
 
-	private String name, desc;
+	private String name, desc, tag;
 	private int account_id, ID;
 	private LocalDate date;
 	private BigDecimal amount;
@@ -17,12 +17,14 @@ public class Transaction {
 	/**
 	 * Builds a Transaction Instance with all of the pertinent details
 	 * @param name - Transaction's name
+	 * @param tag - Transaction's identifier tag
 	 * @param account_id - Transaction's account ID
 	 * @param date - Transaction's date
 	 * @param amount - Transaction's value
 	 */
-	public Transaction(String name, int account_id, LocalDate date, BigDecimal amount) {
+	public Transaction(String name, String tag, int account_id, LocalDate date, BigDecimal amount) {
 		this.name = name;
+		this.tag = tag;
 		this.account_id = account_id;
 		this.date = date;
 		this.amount = amount;
@@ -32,13 +34,15 @@ public class Transaction {
 	 * Builds a Transaction Instance with all of the pertinent details
 	 * @param name - Transaction's name
 	 * @param desc - Transaction's optional description
+	 * @param tag - Transaction's identifier tag
 	 * @param account_id - Transaction's account ID
 	 * @param date - Transaction's date
 	 * @param amount - Transaction's value
 	 */
-	public Transaction(String name, String desc, int account_id, LocalDate date, BigDecimal amount) {
+	public Transaction(String name, String desc, String tag, int account_id, LocalDate date, BigDecimal amount) {
 		this.name = name;
 		this.desc = desc;
+		this.tag = tag;
 		this.account_id = account_id;
 		this.date = date;
 		this.amount = amount;
@@ -59,6 +63,14 @@ public class Transaction {
 	 */
 	public String getDesc() {
 		return this.desc;
+	}
+
+	/**
+	 * Returns transaction's tag
+	 * @return tag
+	 */
+	public String getTag() {
+		return this.tag;
 	}
 
 	/**

@@ -56,8 +56,6 @@ public class Ledger {
 	 * @param account - Account to remove
 	 */
 	public void removeAccount(Account account) throws SQLException {
-		int id = account.getID();
-
 		// Filter transactions to remove
 		List<Transaction> toRemove = new ArrayList<>();
 		for (ArrayList<Transaction> dayRecords : this.ledger.values()) {

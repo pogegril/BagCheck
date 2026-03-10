@@ -119,6 +119,6 @@ public class Transaction {
 	 */
 	@Override
 	public String toString() {
-		return "[" + this.date.getDayOfMonth() + "/" + this.date.getMonthValue() + "/" + this.date.getYear() + "] " + getName();
+		return "[" + getTag() + "] " + getName();
 	}
 }

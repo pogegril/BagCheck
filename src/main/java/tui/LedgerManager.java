@@ -13,8 +13,9 @@ import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.EmptySpace;
 import com.googlecode.lanterna.gui2.Label;
 import com.googlecode.lanterna.gui2.LinearLayout;
-import com.googlecode.lanterna.gui2.RadioBoxList;
 import com.googlecode.lanterna.gui2.Panel;
+import com.googlecode.lanterna.gui2.RadioBoxList;
+import com.googlecode.lanterna.gui2.TextBox;
 import com.googlecode.lanterna.gui2.Window;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.TerminalSize;
@@ -31,6 +32,7 @@ public class LedgerManager extends BasicWindow {
 
 	// Transaction selection
 	private Transaction selected;
+	private TextBox filterBox;
 	private RadioBoxList<Transaction> transList;
 	private Panel infoPanel;
 
@@ -47,6 +49,21 @@ public class LedgerManager extends BasicWindow {
 		// Window panel
 		Panel window = new Panel();
 		window.setLayoutManager(new LinearLayout(Direction.VERTICAL));
+		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
+
+		Panel topPanel = new Panel();
+		topPanel.setLayoutManager(new LinearLayout(Direction.HORIZONTAL));
+		topPanel.addComponent(new EmptySpace(new TerminalSize(3, 0)));
+		topPanel.addComponent(new Label("Filter: "));		
+		this.filterBox = new TextBox(new TerminalSize(20, 1));
+		topPanel.addComponent(this.filterBox);
+
+		topPanel.addComponent(new EmptySpace(new TerminalSize(3, 0)));
+		topPanel.addComponent(new Button(":  Apply  :", () -> {
+			updateTransactions(ledger);
+		}));
+
+		window.addComponent(topPanel);
 		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
 
 		// Main panel
@@ -154,15 +171,28 @@ public class LedgerManager extends BasicWindow {
 
 	/**
 	 * Updates the transaction list panel
+	 * Applies filters if there are any
 	 * @param ledger - User ledger
 	 */
 	public void updateTransactions(Ledger ledger) {
 		this.transList.clearItems();
-		for (ArrayList<Transaction> dayRecords : ledger.getLedger().descendingMap().values()) {
-			for (Transaction transaction : dayRecords) {
-				this.transList.addItem(transaction);
-			}
+		if (this.filterBox.getText() == null || this.filterBox.getText().isEmpty()) {
+			for (ArrayList<Transaction> dayRecords : ledger.getLedger().descendingMap().values()) {
+				for (Transaction transaction : dayRecords) {
+					this.transList.addItem(transaction);
+				}
 
+			}
+		} else {
+			for (ArrayList<Transaction> dayRecords : ledger.getLedger().descendingMap().values()) {
+				for (Transaction transaction : dayRecords) {
+					if (transaction.getTag().equals(this.filterBox.getText())) {
+						this.transList.addItem(transaction);
+					}
+				}
+			}
 		}
 	}
+
+
 }

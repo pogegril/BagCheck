@@ -65,7 +65,7 @@ public class AddAccount extends BasicWindow {
 		// Save & return
 		window.addComponent(new Button(": Save :", () -> {
 			try {
-				if (name.getText() == null || name.getText() == "") {
+				if (name.getText() == null || name.getText().isEmpty()) {
 					this.close();
 					
 				} else {

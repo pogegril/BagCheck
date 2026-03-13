@@ -186,7 +186,7 @@ public class LedgerManager extends BasicWindow {
 		} else {
 			for (ArrayList<Transaction> dayRecords : ledger.getLedger().descendingMap().values()) {
 				for (Transaction transaction : dayRecords) {
-					if (transaction.getTag().equals(this.filterBox.getText())) {
+					if (transaction.getTag().equals(this.filterBox.getText().trim())) {
 						this.transList.addItem(transaction);
 					}
 				}

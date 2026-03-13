@@ -24,7 +24,7 @@ public class Transaction {
 	 */
 	public Transaction(String name, String tag, int account_id, LocalDate date, BigDecimal amount) {
 		this.name = name;
-		this.tag = tag;
+		this.tag = tag.trim();
 		this.account_id = account_id;
 		this.date = date;
 		this.amount = amount;
@@ -42,7 +42,7 @@ public class Transaction {
 	public Transaction(String name, String desc, String tag, int account_id, LocalDate date, BigDecimal amount) {
 		this.name = name;
 		this.desc = desc;
-		this.tag = tag;
+		this.tag = tag.trim();
 		this.account_id = account_id;
 		this.date = date;
 		this.amount = amount;

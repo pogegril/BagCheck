@@ -159,6 +159,9 @@ public class Database {
 	 */
 	public static void remAccount(int id) throws SQLException {
 		try (Connection connection = getConnection()) {
+			// Deletes any leftover database transactions currently not loaded by the program
+			TransactionDAO transDao = new TransactionDAO(connection);
+			transDao.deleteByAccount(id);
 			AccountDAO accDao = new AccountDAO(connection);
 			if (accDao.delete(id) == 0) {
 				throw new IllegalStateException("Attempted to delete non-existant account.");

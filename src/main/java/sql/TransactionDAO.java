@@ -67,6 +67,18 @@ public class TransactionDAO {
 	}
 
 	/**
+	 * Deletes the transactions with the received account id
+	 * @param id - Account id
+	 * @return update - Number of database rows update (Should be 0 or 1)
+	 */
+	public int deleteByAccount(int id) throws SQLException {
+		try (PreparedStatement statement = this.connection.prepareStatement("DELETE FROM transactions WHERE account_id = ?")){
+			statement.setInt(1, id);
+			return statement.executeUpdate();
+		}
+	}
+
+	/**
 	 * Returns a transaction by its id
 	 * @param id - Transaction id
 	 * @return transaction

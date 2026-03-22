@@ -4,6 +4,7 @@ bank/Currency.class
 main/BagCheck.class
 tui/AddAccount.class
 ledger/Transaction.class
+tui/Transfer.class
 tui/LedgerManager.class
 main/BagTest.class
 sql/Database.class

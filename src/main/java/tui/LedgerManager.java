@@ -102,7 +102,7 @@ public class LedgerManager extends BasicWindow {
 		this.infoPanel = new Panel();
 		this.infoPanel.setLayoutManager(new LinearLayout(Direction.VERTICAL));
 		updateInfo(assets);
-		sideContent.addComponent(this.infoPanel);
+		sideContent.addComponent(this.infoPanel, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 
 		// Menu sub-panel
 		Panel menuPanel = new Panel();
@@ -130,6 +130,12 @@ public class LedgerManager extends BasicWindow {
 				this.infoPanel.addComponent(new Label("Select a transaction\n    to remove."), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 			}
 		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
+
+		menuPanel.addComponent(new Button(": Transfer :", () -> {
+			tui.addWindowAndWait(new Transfer(tui, ledger));
+			updateTransactions(ledger);
+		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
+
 		menuPanel.addComponent(new EmptySpace(new TerminalSize(0, 1)));
 
 		menuPanel.addComponent(new Button(": Back :", () -> {
@@ -139,7 +145,7 @@ public class LedgerManager extends BasicWindow {
 		menuPanel.addComponent(new EmptySpace(new TerminalSize(0, 1)));
 		menuPanel.addComponent(new Label("╚══════════════╝"));
 		menuPanel.addComponent(new EmptySpace(new TerminalSize(0, 1)));
-		sideContent.addComponent(menuPanel);
+		sideContent.addComponent(menuPanel, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 		sidePanel.addComponent(sideContent);
 		sidePanel.addComponent(new EmptySpace(new TerminalSize(1, 0)));
 

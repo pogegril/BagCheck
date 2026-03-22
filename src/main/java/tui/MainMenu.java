@@ -94,7 +94,7 @@ public class MainMenu extends BasicWindow {
 		this.viewPanel.addComponent(new Label(getMonthlyNet(ledger, assets)));
 		this.viewPanel.addComponent(new Label(getYearlyNet(ledger, assets)));
 		this.viewPanel.addComponent(new EmptySpace(new TerminalSize(0, 1)));
-		this.viewPanel.addComponent(new Button(":  Exit  :", () -> {
+		this.viewPanel.addComponent(new Button(": Exit :", () -> {
 			this.close();
 		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 	}

@@ -23,10 +23,11 @@ public class Transaction {
 	 * @param amount - Transaction's value
 	 */
 	public Transaction(String name, String tag, int account_id, LocalDate date, BigDecimal amount) {
-		this.name = name;
+		this.name = name.trim();
 		this.tag = tag.trim();
 		this.account_id = account_id;
 		this.date = date;
+		if (amount.compareTo(BigDecimal.ZERO) == 0) { throw new IllegalArgumentException("Transaction value must not be 0."); }
 		this.amount = amount;
 	}
 
@@ -40,8 +41,8 @@ public class Transaction {
 	 * @param amount - Transaction's value
 	 */
 	public Transaction(String name, String desc, String tag, int account_id, LocalDate date, BigDecimal amount) {
-		this.name = name;
-		this.desc = desc;
+		this.name = name.trim();
+		this.desc = desc.trim();
 		this.tag = tag.trim();
 		this.account_id = account_id;
 		this.date = date;

@@ -23,10 +23,12 @@ public class Transaction {
 	 * @param amount - Transaction's value
 	 */
 	public Transaction(String name, String tag, int account_id, LocalDate date, BigDecimal amount) {
+		if (name == null || name.isEmpty()) { throw new IllegalArgumentException("Transaction name must not be empty."); }
 		this.name = name.trim();
+		if (tag == null || tag.isEmpty()) { throw new IllegalArgumentException("Transaction tag must not be empty."); }
 		this.tag = tag.trim();
 		this.account_id = account_id;
-		this.date = date;
+		this.date = date; // Date parser handles date assigning and error catching
 		if (amount.compareTo(BigDecimal.ZERO) == 0) { throw new IllegalArgumentException("Transaction value must not be 0."); }
 		this.amount = amount;
 	}

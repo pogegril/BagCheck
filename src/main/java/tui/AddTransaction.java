@@ -116,10 +116,10 @@ public class AddTransaction extends BasicWindow {
 					this.close();
 				} else {
 					LocalDate date = LocalDate.parse(dateBox.getText(), dateFormat);
-					if (name.getText() == null || name.getText().isEmpty() || amount.getText() == null || amount.getText().isEmpty()) {
+					if (amount.getText() == null || amount.getText().isEmpty()) {
 						this.close();
 					} else {
-						if (desc.getText() != "" && desc.getText() != null) {
+							if (!(desc.getText() == null || desc.getText().equals(""))) {
 							Transaction transaction = new Transaction(name.getText(), desc.getText(), tag.getText(), accountList.getSelectedItem().getID(), date, new BigDecimal(amount.getText()));
 							ledger.addTransaction(transaction);
 						} else {

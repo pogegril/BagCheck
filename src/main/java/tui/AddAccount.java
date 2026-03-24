@@ -65,13 +65,8 @@ public class AddAccount extends BasicWindow {
 		// Save & return
 		window.addComponent(new Button(": Save :", () -> {
 			try {
-				if (name.getText() == null || name.getText().isEmpty()) {
-					this.close();
-					
-				} else {
-					Account account = new Account(name.getText(), currencyList.getSelectedItem());
-					assets.addAccount(account);
-				}
+				Account account = new Account(name.getText(), currencyList.getSelectedItem());
+				assets.addAccount(account);
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (SQLException e) {

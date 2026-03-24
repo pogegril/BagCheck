@@ -20,9 +20,9 @@ public class Account {
 	 * @param currency - Account's currency
 	 */
 	public Account(String name, Currency currency) {
-		if (name == null || name.length() == 0) {throw new IllegalArgumentException("The Account's name must not be empty.");}
-		this.name = name.trim();
+		setName(name);
 		this.balance = new BigDecimal(0);
+		if (currency == null) { throw new IllegalArgumentException("Currency must not be null"); }
 		this.currency = currency;
 	}
 
@@ -32,6 +32,15 @@ public class Account {
 	 */
 	public String getName() {
 		return this.name;
+	}
+
+	/**
+	 * Updates the account's name
+	 * @param name - Account's new name
+	 */
+	public void setName(String name) {
+		if (name == null || name.isEmpty()) { throw new IllegalArgumentException("The Account's name must not be empty."); }
+		this.name = name.trim();
 	}
 
 	/**

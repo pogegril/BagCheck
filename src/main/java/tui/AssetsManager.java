@@ -8,6 +8,7 @@ import com.googlecode.lanterna.gui2.BasicWindow;
 import com.googlecode.lanterna.gui2.Borders;
 import com.googlecode.lanterna.gui2.Button;
 import com.googlecode.lanterna.gui2.Component;
+import com.googlecode.lanterna.gui2.dialogs.TextInputDialog;
 import com.googlecode.lanterna.gui2.Direction;
 import com.googlecode.lanterna.gui2.EmptySpace;
 import com.googlecode.lanterna.gui2.Label;
@@ -99,8 +100,15 @@ public class AssetsManager extends BasicWindow {
 			updateAccounts(assets);
 		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 
+		menuPanel.addComponent(new Button(": Rename :", () -> {
+			if (this.selected != null) {
+				tui.addWindowAndWait(new Rename(tui, this.selected));
+				updateAccounts(assets);
+			}
+		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
+
 		menuPanel.addComponent(new Button(": Remove :", () -> {
-			if (!(this.selected == null)) {
+			if (this.selected != null) {
 				try {
 					ledger.removeAccount(this.selected);
 					updateAccounts(assets);

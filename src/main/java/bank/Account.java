@@ -22,8 +22,7 @@ public class Account {
 	public Account(String name, Currency currency) {
 		setName(name);
 		this.balance = new BigDecimal(0);
-		if (currency == null) { throw new IllegalArgumentException("Currency must not be null"); }
-		this.currency = currency;
+		setCurrency(currency);
 	}
 
 	/**
@@ -65,6 +64,15 @@ public class Account {
 	 */
 	public Currency getCurrency() {
 		return this.currency;
+	}
+
+	/**
+	 * Updates the account's currency
+	 * @param currency - Account's new currency
+	 */
+	public void setCurrency(Currency currency) {
+		if (currency == null) { throw new IllegalArgumentException("Currency must not be null"); }
+		this.currency = currency;
 	}
 
 	/**

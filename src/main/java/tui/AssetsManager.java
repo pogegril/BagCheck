@@ -100,9 +100,9 @@ public class AssetsManager extends BasicWindow {
 			updateAccounts(assets);
 		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 
-		menuPanel.addComponent(new Button(": Rename :", () -> {
+		menuPanel.addComponent(new Button(": Edit :", () -> {
 			if (this.selected != null) {
-				tui.addWindowAndWait(new Rename(tui, this.selected));
+				tui.addWindowAndWait(new EditAccount(tui, this.selected));
 				updateAccounts(assets);
 			}
 		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));

@@ -12,7 +12,7 @@ public enum Currency {
 	// To add new currencies add them at the end of the list
 	Euro('€'),
 	Dollar('$'),
-	Pount('£'),
+	Pound('£'),
 	Yen('¥'),
 	Yuan('¥'),
 	Rupee('₹'),

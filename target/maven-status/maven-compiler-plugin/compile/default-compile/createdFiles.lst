@@ -8,9 +8,9 @@ tui/Transfer.class
 tui/LedgerManager.class
 main/BagTest.class
 sql/Database.class
-tui/Rename.class
 sql/AccountDAO.class
 bank/Account.class
+tui/EditAccount.class
 tui/AddTransaction.class
 ledger/Ledger.class
 tui/AssetsManager.class

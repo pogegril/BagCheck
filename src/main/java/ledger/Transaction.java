@@ -23,14 +23,11 @@ public class Transaction {
 	 * @param amount - Transaction's value
 	 */
 	public Transaction(String name, String tag, int account_id, LocalDate date, BigDecimal amount) {
-		if (name == null || name.isEmpty()) { throw new IllegalArgumentException("Transaction name must not be empty."); }
-		this.name = name.trim();
-		if (tag == null || tag.isEmpty()) { throw new IllegalArgumentException("Transaction tag must not be empty."); }
-		this.tag = tag.trim();
-		this.account_id = account_id;
+		setName(name);
+		setTag(tag);
+		setAccountID(account_id);
 		this.date = date; // Date parser handles date assigning and error catching
-		if (amount.compareTo(BigDecimal.ZERO) == 0) { throw new IllegalArgumentException("Transaction value must not be 0."); }
-		this.amount = amount;
+		setAmount(amount);
 	}
 
 	/**
@@ -43,12 +40,12 @@ public class Transaction {
 	 * @param amount - Transaction's value
 	 */
 	public Transaction(String name, String desc, String tag, int account_id, LocalDate date, BigDecimal amount) {
-		this.name = name.trim();
-		this.desc = desc.trim();
-		this.tag = tag.trim();
-		this.account_id = account_id;
-		this.date = date;
-		this.amount = amount;
+		setName(name);
+		setDesc(desc);
+		setTag(tag);
+		setAccountID(account_id);
+		this.date = date; // Date parser handles date assigning and error catching
+		setAmount(amount);
 	}
 
 	/**
@@ -57,6 +54,15 @@ public class Transaction {
 	 */
 	public String getName() {
 		return this.name;
+	}
+
+	/**
+	 * Sets the transaction's name
+	 * @param name - Transaction's new name
+	 */
+	private void setName(String name) {
+		if (name == null || name.isEmpty()) { throw new IllegalArgumentException("Transaction name must not be empty."); }
+		this.name = name.trim();
 	}
 
 	/**
@@ -69,6 +75,16 @@ public class Transaction {
 	}
 
 	/**
+	 * Sets the transaction's description
+	 * @param desc - Transaction's new description
+	 */
+	private void setDesc(String desc) {
+		if (desc != null) {
+			this.desc = desc.trim();
+		}
+	}
+
+	/**
 	 * Returns transaction's tag
 	 * @return tag
 	 */
@@ -77,11 +93,28 @@ public class Transaction {
 	}
 
 	/**
+	 * Sets the transaction's tag
+	 * @param tag - Transaction's new tag
+	 */
+	private void setTag(String tag) {
+		if (tag == null || tag.isEmpty()) { throw new IllegalArgumentException("Transaction tag must not be empty."); }
+		this.tag = tag.trim();
+	}
+
+	/**
 	 * Returns transaction's account
 	 * @return account
 	 */
 	public int getAccountID() {
 		return this.account_id;
+	}
+
+	/**
+	 * Sets the transaction's account ID
+	 * @param account_id - New account ID
+	 */
+	private void setAccountID(int account_id) {
+		this.account_id = account_id;
 	}
 
 	/**
@@ -114,6 +147,15 @@ public class Transaction {
 	 */
 	public BigDecimal getAmount() {
 		return this.amount;
+	}
+
+	/**
+	 * Sets the transaction's amount
+	 * @param amount - New transaction value
+	 */
+	private void setAmount(BigDecimal amount) {
+		if (amount == null || amount.compareTo(BigDecimal.ZERO) == 0) { throw new IllegalArgumentException("Transaction value must not be null."); }
+		this.amount = amount;
 	}
 
 	/**

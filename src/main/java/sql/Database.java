@@ -121,6 +121,7 @@ public class Database {
 	 * Loads the received ledger with the database's contents
 	 * Loads only transactions since the received date
 	 * @param ledger - Empty ledger
+	 * @param date - Date limit
 	 */
 	public static void loadLedger(Ledger ledger, LocalDate date) throws SQLException {
 		Assets assets = ledger.getAssets();
@@ -166,6 +167,30 @@ public class Database {
 			if (accDao.delete(id) == 0) {
 				throw new IllegalStateException("Attempted to delete non-existant account.");
 			}
+		}
+	}
+
+	/**
+	 * Connects the AccountDAO to update an account's database entry's name
+	 * @param id - Account ID
+	 * @param name - New name
+	 */
+	public static void updateName(int id, String name) throws SQLException {
+		try (Connection connection = getConnection()) {
+			AccountDAO accDao = new AccountDAO(connection);
+			accDao.updateName(id, name);
+		}
+	}
+
+	/**
+	 * Connects the AccountDAO to update an account's database entry's currency
+	 * @param id - Account ID
+	 * @param currency_id - New currency ID
+	 */
+	public static void updateCurrency(int id, int currency_id) throws SQLException {
+		try (Connection connection = getConnection()) {
+			AccountDAO accDao = new AccountDAO(connection);
+			accDao.updateCurrency(id, currency_id);
 		}
 	}
 

@@ -62,6 +62,32 @@ public class AccountDAO {
 	}
 
 	/**
+	 * Updates the database's account entry's name
+	 * @param id - Account ID
+	 * @param name - New name
+	 */
+	public void updateName(int id, String name) throws SQLException {
+		try (PreparedStatement statement = this.connection.prepareStatement("UPDATE accounts SET name = ? WHERE id = ?")) {
+			statement.setString(1, name);
+			statement.setInt(2, id);
+			statement.executeUpdate();
+		}
+	}
+
+	/**
+	 * Updates the database's account entry's currency ID reference
+	 * @param id - Account ID
+	 * @param currency_id - Currency ID
+	 */
+	public void updateCurrency(int id, int currency_id) throws SQLException {
+		try (PreparedStatement statement = this.connection.prepareStatement("UPDATE accounts SET currency = ? WHERE id = ?")) {
+			statement.setInt(1, currency_id);
+			statement.setInt(2, id);
+			statement.executeUpdate();
+		}
+	}
+
+	/**
 	 * Updates the database's account entry's balance
 	 * @param id - Account ID
 	 * @param balance - Updated balance

@@ -2,6 +2,9 @@ package bank;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
+
+import sql.Database;
 
 /**
  * Class to handle an account's details and operations
@@ -20,9 +23,11 @@ public class Account {
 	 * @param currency - Account's currency
 	 */
 	public Account(String name, Currency currency) {
-		setName(name);
+		if (name == null || name.isEmpty()) { throw new IllegalArgumentException("The Account's name must not be empty."); }
+		this.name = name.trim();
 		this.balance = new BigDecimal(0);
-		setCurrency(currency);
+		if (currency == null) { throw new IllegalArgumentException("Currency must not be null"); }
+		this.currency = currency;
 	}
 
 	/**
@@ -37,9 +42,10 @@ public class Account {
 	 * Updates the account's name
 	 * @param name - Account's new name
 	 */
-	public void setName(String name) {
+	public void setName(String name) throws SQLException {
 		if (name == null || name.isEmpty()) { throw new IllegalArgumentException("The Account's name must not be empty."); }
 		this.name = name.trim();
+		Database.updateName(this.ID, name);
 	}
 
 	/**
@@ -70,9 +76,10 @@ public class Account {
 	 * Updates the account's currency
 	 * @param currency - Account's new currency
 	 */
-	public void setCurrency(Currency currency) {
+	public void setCurrency(Currency currency) throws SQLException {
 		if (currency == null) { throw new IllegalArgumentException("Currency must not be null"); }
 		this.currency = currency;
+		Database.updateCurrency(this.ID, currency.getID());
 	}
 
 	/**

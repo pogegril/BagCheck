@@ -117,6 +117,16 @@ public class LedgerManager extends BasicWindow {
 			updateTransactions(ledger);
 		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 
+		menuPanel.addComponent(new Button(": Edit :", () -> {
+			if (!(this.selected == null)) {
+				tui.addWindowAndWait(new EditTransaction(tui, ledger, this.selected));
+				updateTransactions(ledger);
+			} else {
+				this.infoPanel.removeAllComponents();
+				this.infoPanel.addComponent(new Label("Select a transaction\n    to edit."), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
+			}
+		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
+
 		menuPanel.addComponent(new Button(": Remove :", () -> {
 			if (!(this.selected == null)) {
 				try {

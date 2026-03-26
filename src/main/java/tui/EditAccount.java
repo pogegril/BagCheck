@@ -1,5 +1,6 @@
 package tui;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 
 import com.googlecode.lanterna.gui2.BasicWindow;
@@ -30,7 +31,7 @@ public class EditAccount extends BasicWindow {
 	 * @param account - Selected account
 	 */
 	public EditAccount(WindowBasedTextGUI tui, Account account) {
-		super("Edit");
+		super("Edit Account");
 		setHints(Arrays.asList(Window.Hint.CENTERED));
 
 		// Main window
@@ -82,10 +83,11 @@ public class EditAccount extends BasicWindow {
 				this.close();
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 			topInfo.setText("  Invalid details.");
 		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
-		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
 
 		setComponent(window);
 	}

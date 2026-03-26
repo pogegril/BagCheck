@@ -57,6 +57,7 @@ public class MainMenu extends BasicWindow {
 		// Assets button
 		menuPanel.addComponent(new Button(": Assets :", () -> {
 			tui.addWindowAndWait(new AssetsManager(tui, ledger));
+			updateOverview(ledger);
 		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 
 		// Ledger button

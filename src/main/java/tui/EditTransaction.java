@@ -21,24 +21,25 @@ import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.TerminalSize;
 
 import bank.Account;
+import bank.Assets;
 import ledger.Ledger;
 import ledger.Transaction;
 
 /**
- * User input window to create a new transaction
+ * Window to rewrite transactions with edited information
  * @author pogegril
  */
-public class AddTransaction extends BasicWindow {
+public class EditTransaction extends BasicWindow {
 
 	/**
-	 * Creates the account creation window
+	 * Creates the transaction editor window
 	 * @param tui - User terminal interface
 	 * @param ledger - User ledger
+	 * @param transaction - Selected transaction
 	 */
-	public AddTransaction(WindowBasedTextGUI tui, Ledger ledger) {
-		super("Create transaction");
-		setHints(Arrays.asList(Window.Hint.CENTERED));
-
+	public EditTransaction(WindowBasedTextGUI tui, Ledger ledger, Transaction transaction) {
+		super("Edit Transaction");
+		Assets assets = ledger.getAssets();
 		// Main window
 		Panel window = new Panel();
 		window.setLayoutManager(new LinearLayout(Direction.VERTICAL));
@@ -51,6 +52,7 @@ public class AddTransaction extends BasicWindow {
 
 		nameInput.addComponent(new Label("Name: "));
 		TextBox name = new TextBox(new TerminalSize(20, 1));
+		name.setText(transaction.getName());
 		nameInput.addComponent(name);
 
 		window.addComponent(nameInput);
@@ -64,6 +66,7 @@ public class AddTransaction extends BasicWindow {
 		// Amount input
 		inputPanel.addComponent(new Label("Amount: "));
 		TextBox amount = new TextBox(new TerminalSize(5, 1));
+		amount.setText(transaction.getAmount().toString());
 		inputPanel.addComponent(amount);
 		inputPanel.addComponent(new EmptySpace(new TerminalSize(2, 0)));
 
@@ -73,6 +76,8 @@ public class AddTransaction extends BasicWindow {
 		for (Account account : ledger.getAssets().getAssets()) {
 			accountList.addItem(account);
 		}
+		Account account = assets.getAccountByID(transaction.getAccountID());
+		accountList.setSelectedItem(account);
 		inputPanel.addComponent(accountList);
 		
 		window.addComponent(inputPanel);
@@ -86,11 +91,14 @@ public class AddTransaction extends BasicWindow {
 		// Date input
 		inputPanel2.addComponent(new Label("Date: "));
 		TextBox dateBox = new TextBox(new TerminalSize(10, 1));
+		String date = transaction.getDate().format(DateTimeFormatter.ofPattern("d/M/yyyy"));
+		dateBox.setText(date);
 		inputPanel2.addComponent(dateBox);
 
 		// Tag input
 		inputPanel2.addComponent(new Label("Tag: "));
 		TextBox tag = new TextBox(new TerminalSize(10, 1));
+		tag.setText(transaction.getTag());
 		inputPanel2.addComponent(tag);
 
 		window.addComponent(inputPanel2);
@@ -103,6 +111,9 @@ public class AddTransaction extends BasicWindow {
 
 		descInput.addComponent(new Label("(Description): "));
 		TextBox desc = new TextBox(new TerminalSize(20, 1));
+		if (transaction.getDesc() != null) {
+			desc.setText(transaction.getDesc());
+		}
 		descInput.addComponent(desc);
 
 		window.addComponent(descInput);
@@ -116,10 +127,22 @@ public class AddTransaction extends BasicWindow {
 				}
 
 				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("d/M/yyyy");
-				LocalDate date = LocalDate.parse(dateBox.getText(), dateFormat);
+				LocalDate newDate = LocalDate.parse(dateBox.getText(), dateFormat);
+				BigDecimal newAmount = new BigDecimal(amount.getText());
 
-				Transaction transaction = new Transaction(name.getText(), desc.getText(), tag.getText(), accountList.getSelectedItem().getID(), date, new BigDecimal(amount.getText()));
-				ledger.addTransaction(transaction);
+				// Checks if any detail changed and rewrites transaction if so
+				if (
+						!transaction.getName().equals(name.getText().trim()) ||
+						!transaction.getDesc().equals(desc.getText().trim()) || 
+						!transaction.getTag().equals(tag.getText().trim()) || 
+						!(accountList.getSelectedItem().getID() == transaction.getAccountID()) ||
+						!newDate.isEqual(transaction.getDate()) ||
+						!(newAmount.compareTo(transaction.getAmount()) == 0)
+				   ) {
+					Transaction newTransaction = new Transaction(name.getText(), desc.getText(), tag.getText(), accountList.getSelectedItem().getID(), newDate, newAmount);
+					ledger.addTransaction(newTransaction);
+					ledger.removeTransaction(transaction);
+				   }
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			} catch (SQLException e) {

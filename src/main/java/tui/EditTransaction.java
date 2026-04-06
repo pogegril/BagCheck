@@ -144,11 +144,11 @@ public class EditTransaction extends BasicWindow {
 					ledger.removeTransaction(transaction);
 				   }
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				this.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				this.close();
 			} catch (DateTimeParseException e) {
-				e.printStackTrace();
+				this.close();
 			}
 			this.close();
 		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));

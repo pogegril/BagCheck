@@ -121,11 +121,11 @@ public class AddTransaction extends BasicWindow {
 				Transaction transaction = new Transaction(name.getText(), desc.getText(), tag.getText(), accountList.getSelectedItem().getID(), date, new BigDecimal(amount.getText()));
 				ledger.addTransaction(transaction);
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				this.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				this.close();
 			} catch (DateTimeParseException e) {
-				e.printStackTrace();
+				this.close();
 			}
 			this.close();
 		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));

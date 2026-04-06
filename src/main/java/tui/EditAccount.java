@@ -82,13 +82,11 @@ public class EditAccount extends BasicWindow {
 				}
 				this.close();
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				topInfo.setText("  Invalid details.");
 			} catch (SQLException e) {
-				e.printStackTrace();
+				topInfo.setText("  Invalid details.");
 			}
-			topInfo.setText("  Invalid details.");
 		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
-
 		setComponent(window);
 	}
 }

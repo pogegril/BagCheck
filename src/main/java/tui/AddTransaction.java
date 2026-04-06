@@ -44,6 +44,10 @@ public class AddTransaction extends BasicWindow {
 		window.setLayoutManager(new LinearLayout(Direction.VERTICAL));
 		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
 
+		Label topInfo = new Label("  Register the transaction's details:");
+		window.addComponent(topInfo);
+		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
+
 		// Name panel
 		Panel nameInput = new Panel();
 		nameInput.setLayoutManager(new LinearLayout(Direction.HORIZONTAL));
@@ -108,11 +112,15 @@ public class AddTransaction extends BasicWindow {
 		window.addComponent(descInput);
 		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
 
+		// Button panel
+		Panel buttonPanel = new Panel();
+		buttonPanel.setLayoutManager(new LinearLayout(Direction.HORIZONTAL));
+
 		// Save & return
-		window.addComponent(new Button(": Save :", () -> {
+		buttonPanel.addComponent(new Button(": Save :", () -> {
 			try {
 				if (amount.getText() == null || amount.getText().isEmpty()) {
-					this.close();
+					throw new IllegalArgumentException("Invalid amount.");
 				}
 
 				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("d/M/yyyy");
@@ -120,15 +128,23 @@ public class AddTransaction extends BasicWindow {
 
 				Transaction transaction = new Transaction(name.getText(), desc.getText(), tag.getText(), accountList.getSelectedItem().getID(), date, new BigDecimal(amount.getText()));
 				ledger.addTransaction(transaction);
+				this.close();
 			} catch (IllegalArgumentException e) {
-				this.close();
+				topInfo.setText("  Invalid details.");
 			} catch (SQLException e) {
-				this.close();
+				topInfo.setText("  Invalid details.");
 			} catch (DateTimeParseException e) {
-				this.close();
+				topInfo.setText("  Invalid details.");
 			}
+		}));
+		buttonPanel.addComponent(new EmptySpace(new TerminalSize(2, 0)));
+
+		// Cancel & return
+		buttonPanel.addComponent(new Button(": Back :", () -> {
 			this.close();
-		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
+		}));
+
+		window.addComponent(buttonPanel, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 		setComponent(window);
 	}
 }

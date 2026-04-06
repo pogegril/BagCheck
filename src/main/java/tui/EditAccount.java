@@ -70,8 +70,12 @@ public class EditAccount extends BasicWindow {
 		window.addComponent(mainPanel);
 		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
 
+		// Button panel
+		Panel buttonPanel = new Panel();
+		buttonPanel.setLayoutManager(new LinearLayout(Direction.HORIZONTAL));
+
 		// Save & return
-		window.addComponent(new Button(": Save :", () -> {
+		buttonPanel.addComponent(new Button(":  Save  :", () -> {
 			try {
 				if (!name.getText().equals(account.getName())) {
 					account.setName(name.getText());
@@ -86,7 +90,14 @@ public class EditAccount extends BasicWindow {
 			} catch (SQLException e) {
 				topInfo.setText("  Invalid details.");
 			}
-		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
+		}));
+		buttonPanel.addComponent(new EmptySpace(new TerminalSize(2, 0)));
+
+		buttonPanel.addComponent(new Button(":  Back  :", () -> {
+			this.close();
+		}));
+
+		window.addComponent(buttonPanel, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 		setComponent(window);
 	}
 }

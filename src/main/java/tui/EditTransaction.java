@@ -40,9 +40,15 @@ public class EditTransaction extends BasicWindow {
 	public EditTransaction(WindowBasedTextGUI tui, Ledger ledger, Transaction transaction) {
 		super("Edit Transaction");
 		Assets assets = ledger.getAssets();
+
 		// Main window
 		Panel window = new Panel();
 		window.setLayoutManager(new LinearLayout(Direction.VERTICAL));
+		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
+
+		// Top info
+		Label topInfo = new Label("  Edit transaction's details.");
+		window.addComponent(topInfo);
 		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
 
 		// Name panel
@@ -119,8 +125,12 @@ public class EditTransaction extends BasicWindow {
 		window.addComponent(descInput);
 		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
 
+		// Button panel
+		Panel buttonPanel = new Panel();
+		buttonPanel.setLayoutManager(new LinearLayout(Direction.HORIZONTAL));
+
 		// Save & return
-		window.addComponent(new Button(": Save :", () -> {
+		buttonPanel.addComponent(new Button(": Save :", () -> {
 			try {
 				if (amount.getText() == null || amount.getText().isEmpty()) {
 					this.close();
@@ -143,15 +153,22 @@ public class EditTransaction extends BasicWindow {
 					ledger.addTransaction(newTransaction);
 					ledger.removeTransaction(transaction);
 				   }
+				this.close();
 			} catch (IllegalArgumentException e) {
-				this.close();
+				topInfo.setText("  Invalid details.");
 			} catch (SQLException e) {
-				this.close();
+				topInfo.setText("  Invalid details.");
 			} catch (DateTimeParseException e) {
-				this.close();
+				topInfo.setText("  Invalid details.");
 			}
+		}));
+		buttonPanel.addComponent(new EmptySpace(new TerminalSize(2, 0)));
+
+		buttonPanel.addComponent(new Button(":  Back  :", () -> {
 			this.close();
-		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
+		}));
+
+		window.addComponent(buttonPanel, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 		setComponent(window);
 	}
 }

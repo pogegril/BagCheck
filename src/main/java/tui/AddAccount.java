@@ -39,6 +39,11 @@ public class AddAccount extends BasicWindow {
 		window.setLayoutManager(new LinearLayout(Direction.VERTICAL));
 		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
 
+		// Top info
+		Label topInfo = new Label("  Register account's information:");
+		window.addComponent(topInfo);
+		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
+
 		// Input panel
 		Panel inputPanel = new Panel();
 		inputPanel.setLayoutManager(new LinearLayout(Direction.HORIZONTAL));
@@ -61,19 +66,29 @@ public class AddAccount extends BasicWindow {
 
 		window.addComponent(inputPanel);
 		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
+
+		Panel buttonPanel = new Panel();
+		buttonPanel.setLayoutManager(new LinearLayout(Direction.HORIZONTAL));
 		
 		// Save & return
-		window.addComponent(new Button(": Save :", () -> {
+		buttonPanel.addComponent(new Button(": Save :", () -> {
 			try {
 				Account account = new Account(name.getText(), currencyList.getSelectedItem());
 				assets.addAccount(account);
+				this.close();
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				topInfo.setText("  Invalid information.");
 			} catch (SQLException e) {
-				e.printStackTrace();
+				topInfo.setText("  Invalid information.");
 			}
+		}));
+		buttonPanel.addComponent(new EmptySpace(new TerminalSize(2, 0)));
+
+		buttonPanel.addComponent(new Button(":  Back  :", () -> {
 			this.close();
-		}), LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
+		}));
+
+		window.addComponent(buttonPanel, LinearLayout.createLayoutData(LinearLayout.Alignment.Center));
 		setComponent(window);
 	}
 }

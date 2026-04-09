@@ -6,7 +6,6 @@ tui/AddAccount.class
 ledger/Transaction.class
 tui/Transfer.class
 tui/LedgerManager.class
-main/BagTest.class
 tui/EditTransaction.class
 sql/Database.class
 sql/AccountDAO.class

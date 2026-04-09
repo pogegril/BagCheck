@@ -1,5 +1,6 @@
 package tui;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Arrays;
 
@@ -52,10 +53,17 @@ public class EditAccount extends BasicWindow {
 		mainPanel.addComponent(new EmptySpace(new TerminalSize(1, 0)));
 
 		// Name
-		TextBox name = new TextBox(new TerminalSize(16, 1));
+		TextBox name = new TextBox(new TerminalSize(12, 1));
 		name.setText(account.getName());
 		mainPanel.addComponent(name);
 		mainPanel.addComponent(new EmptySpace(new TerminalSize(1, 0)));
+
+		// Current balance
+		mainPanel.addComponent(new Label("Balance:"));
+		TextBox balance = new TextBox(new TerminalSize(10, 1));
+		balance.setText(account.getBalance().toString());
+		mainPanel.addComponent(balance);
+		mainPanel.addComponent(new EmptySpace(new TerminalSize(2, 0)));
 
 		// Currency
 		mainPanel.addComponent(new Label("Currency: "));
@@ -83,6 +91,12 @@ public class EditAccount extends BasicWindow {
 				Currency currency = currencyList.getSelectedItem();
 				if (!(currency.getID() == account.getCurrency().getID())) {
 					account.setCurrency(currency);
+				}
+				if (!balance.getText().isEmpty()) {
+					BigDecimal newBalance = new BigDecimal(balance.getText());
+					if (newBalance.compareTo(account.getBalance()) != 0) {
+						account.setBalance(newBalance);
+					}
 				}
 				this.close();
 			} catch (IllegalArgumentException e) {

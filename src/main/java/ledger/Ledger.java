@@ -90,11 +90,11 @@ public class Ledger {
 		}
 
 		Database.addTransaction(transaction);
+		dateRecords.add(transaction);
+
 		Account account = this.assets.getAccountByID(transaction.getAccountID());
 		account.transaction(transaction.getAmount());
-		Database.updateBalance(account.getID(), account.getBalance());
 
-		dateRecords.add(transaction);
 		return true;
 	}
 

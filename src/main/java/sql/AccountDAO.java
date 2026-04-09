@@ -114,9 +114,8 @@ public class AccountDAO {
 					int id = result.getInt("id");
 					Currency currency = Currency.getByID(result.getInt("currency"));
 					BigDecimal balance = result.getBigDecimal("balance");
-					Account account = new Account(name, currency);
+					Account account = new Account(name, currency, balance);
 					account.setID(id);
-					account.transaction(balance);
 					accounts.add(account);
 				}
 				return accounts;

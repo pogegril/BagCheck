@@ -1,5 +1,6 @@
 package tui;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Arrays;
 
@@ -51,8 +52,14 @@ public class AddAccount extends BasicWindow {
 		
 		// Name input
 		inputPanel.addComponent(new Label("Name: "));
-		TextBox name = new TextBox(new TerminalSize(15, 1));
+		TextBox name = new TextBox(new TerminalSize(12, 1));
 		inputPanel.addComponent(name);
+		inputPanel.addComponent(new EmptySpace(new TerminalSize(2, 0)));
+
+		// Starter balance
+		inputPanel.addComponent(new Label("Balance:"));
+		TextBox balance = new TextBox(new TerminalSize(10, 1));
+		inputPanel.addComponent(balance);
 		inputPanel.addComponent(new EmptySpace(new TerminalSize(2, 0)));
 
 		// Currency picker
@@ -73,7 +80,11 @@ public class AddAccount extends BasicWindow {
 		// Save & return
 		buttonPanel.addComponent(new Button(": Save :", () -> {
 			try {
-				Account account = new Account(name.getText(), currencyList.getSelectedItem());
+				BigDecimal starterBalance = BigDecimal.ZERO;
+				if (!(balance.getText() == null || balance.getText().isEmpty())) {	
+					starterBalance = new BigDecimal(balance.getText());
+				}
+				Account account = new Account(name.getText(), currencyList.getSelectedItem(), starterBalance);
 				assets.addAccount(account);
 				this.close();
 			} catch (IllegalArgumentException e) {

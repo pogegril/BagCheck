@@ -21,11 +21,12 @@ public class Account {
 	 * Creates a new account
 	 * @param name - Account's identification
 	 * @param currency - Account's currency
+	 * @param balance - Current balance
 	 */
-	public Account(String name, Currency currency) {
+	public Account(String name, Currency currency, BigDecimal balance) {
 		if (name == null || name.isEmpty()) { throw new IllegalArgumentException("The Account's name must not be empty."); }
 		this.name = name.trim();
-		this.balance = new BigDecimal(0);
+		this.balance = balance;
 		if (currency == null) { throw new IllegalArgumentException("Currency must not be null"); }
 		this.currency = currency;
 	}
@@ -91,11 +92,23 @@ public class Account {
 	}
 
 	/**
-	 * Updates the account's balance with the transaction's value
-	 * @param deposit - Transaction's value
+	 * Updates the current balance
+	 * Unlike transactions it doesnt log the update nor
+	 * ledger overview information
+	 * @param balance - New balance
 	 */
-	public void transaction(BigDecimal ammount) {
-		this.balance = this.balance.add(ammount);
+	public void setBalance(BigDecimal balance) throws SQLException {
+		this.balance = balance;
+		Database.updateBalance(this.ID, this.balance);
+	}
+
+	/**
+	 * Updates the account's balance with the transaction's value
+	 * @param amount - Transaction's value
+	 */
+	public void transaction(BigDecimal amount) throws SQLException {
+		this.balance = this.balance.add(amount);
+		Database.updateBalance(this.ID, this.balance);
 	}
 
 	/**

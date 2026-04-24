@@ -29,7 +29,7 @@ public class TUI {
 			screen.startScreen();
 			MultiWindowTextGUI tui = new MultiWindowTextGUI(screen);
 
-			tui.setTheme(new SimpleTheme(new TextColor.RGB(220, 167, 142), new TextColor.RGB(16, 25, 39)));
+			tui.setTheme(new SimpleTheme(new TextColor.RGB(145, 121, 153), new TextColor.RGB(25, 18, 29)));
 			tui.addWindowAndWait(new MainMenu(tui, ledger));
 		} finally {
 			screen.stopScreen();

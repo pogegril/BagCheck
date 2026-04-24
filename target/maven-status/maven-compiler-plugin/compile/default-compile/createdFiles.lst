@@ -16,3 +16,4 @@ ledger/Ledger.class
 tui/AssetsManager.class
 tui/TUI.class
 sql/TransactionDAO.class
+tui/components/HorizontalRadioBox.class

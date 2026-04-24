@@ -23,6 +23,7 @@ import bank.Currency;
 
 /**
  * User input window to create a new account
+ * @author pogegril
  */
 public class AddAccount extends BasicWindow {
 

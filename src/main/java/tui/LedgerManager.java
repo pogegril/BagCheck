@@ -23,6 +23,7 @@ import com.googlecode.lanterna.TerminalSize;
 import bank.Assets;
 import ledger.Ledger;
 import ledger.Transaction;
+import tui.components.HorizontalRadioBox;
 
 /**
  * Terminal window to manage user's ledger
@@ -33,6 +34,7 @@ public class LedgerManager extends BasicWindow {
 	// Transaction selection
 	private Transaction selected;
 	private TextBox filterBox;
+	private HorizontalRadioBox filterMode;
 	private RadioBoxList<Transaction> transList;
 	private Panel infoPanel;
 
@@ -58,13 +60,28 @@ public class LedgerManager extends BasicWindow {
 		this.filterBox = new TextBox(new TerminalSize(20, 1));
 		topPanel.addComponent(this.filterBox);
 
-		topPanel.addComponent(new EmptySpace(new TerminalSize(3, 0)));
-		topPanel.addComponent(new Button(":  Apply  :", () -> {
+
+		topPanel.addComponent(new EmptySpace(new TerminalSize(8, 0)));
+		topPanel.addComponent(new Button(": Apply :", () -> {
 			updateTransactions(ledger);
 		}));
 
 		window.addComponent(topPanel);
 		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
+
+		Panel filterOptions = new Panel();
+		filterOptions.setLayoutManager(new LinearLayout(Direction.HORIZONTAL));
+		filterOptions.addComponent(new EmptySpace(new TerminalSize(6, 0)));
+
+		this.filterMode = new HorizontalRadioBox();
+		filterMode.addButton(": Tag :");
+		filterMode.addButton(": Name :");
+		filterMode.addButton(": Account :");
+		filterOptions.addComponent(filterMode);
+
+		window.addComponent(filterOptions);
+		window.addComponent(new EmptySpace(new TerminalSize(0, 1)));
+
 
 		// Main panel
 		Panel mainPanel = new Panel();
@@ -190,7 +207,7 @@ public class LedgerManager extends BasicWindow {
 	 * Applies filters if there are any
 	 * @param ledger - User ledger
 	 */
-	public void updateTransactions(Ledger ledger) {
+	private void updateTransactions(Ledger ledger) {
 		this.transList.clearItems();
 		if (this.filterBox.getText() == null || this.filterBox.getText().isEmpty()) {
 			for (ArrayList<Transaction> dayRecords : ledger.getLedger().descendingMap().values()) {
@@ -200,15 +217,84 @@ public class LedgerManager extends BasicWindow {
 
 			}
 		} else {
-			for (ArrayList<Transaction> dayRecords : ledger.getLedger().descendingMap().values()) {
-				for (Transaction transaction : dayRecords) {
-					if (transaction.getTag().equals(this.filterBox.getText().trim())) {
-						this.transList.addItem(transaction);
-					}
+			// Filter by Tag
+			if (this.filterMode.getSelectedIndex() == 0) {
+				filterByTag(ledger);
+			} else if (this.filterMode.getSelectedIndex() == 1) {
+				filterByName(ledger);
+			} else if (this.filterMode.getSelectedIndex() == 2) {
+				filterByAccount(ledger);
+			}
+		}
+	}
+
+	/**
+	 * Returns a list of the transactions with the specified tag
+	 * @param ledger - Reference to all transactions
+	 * @return transactions
+	 */
+	private void filterByTag(Ledger ledger) {
+		for (ArrayList<Transaction> dayRecords : ledger.getLedger().descendingMap().values()) {
+			for (Transaction transaction : dayRecords) {
+				if (transaction.getTag().equals(this.filterBox.getText().trim())) {
+					this.transList.addItem(transaction);
 				}
 			}
 		}
 	}
 
+	/**
+	 * Returns a list of the transactions with similar names
+	 * @param ledger - Reference to all transactions
+	 * @return transactions
+	 */
+	private void filterByName(Ledger ledger) {
+		for (ArrayList<Transaction> dayRecords : ledger.getLedger().descendingMap().values()) {
+			for (Transaction transaction : dayRecords) {
+				String search = this.filterBox.getText().trim().toLowerCase();
+				if (transaction.getName().toLowerCase().contains(search)) {
+					this.transList.addItem(transaction);
+				}
+			}
+		}
+	}
 
+	/**
+	 * Returns a list of the transactions from the specified account
+	 * @param ledger - Reference to all transactions
+	 * @return transactions
+	 */
+	private void filterByAccount(Ledger ledger) {
+		int id;
+		// Gets the ID from an ID or name text input
+		String filter = this.filterBox.getText().trim();
+		if (isInt(filter)) {
+			id = Integer.parseInt(filter);
+		} else {
+			Assets assets = ledger.getAssets();
+			id = assets.getIDByName(filter);
+			if (id == -1) { return; }
+		}
+
+		for (ArrayList<Transaction> dayRecords : ledger.getLedger().descendingMap().values()) {
+			for (Transaction transaction : dayRecords) {
+				if (transaction.getAccountID() == id) {
+					this.transList.addItem(transaction);
+				}
+			}
+		}
+	}	
+
+	/**
+	 * Returns if the string can be converted to an integer
+	 * @return isInt?
+	 */
+	private boolean isInt(String text) {
+		try {
+			Integer.parseInt(text);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
 }

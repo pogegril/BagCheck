@@ -3,7 +3,7 @@
 	<groupId>com.bagcheck</groupId>
 	<artifactId>bagcheck</artifactId>
 	<description>Personal finances tracking app</description>
-	<version>0.3</version>
+	<version>0.3.1</version>
 	<url>https://github.com/pogegril/BagCheck</url>
 
 	<properties>

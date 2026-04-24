@@ -111,5 +111,20 @@ public class Assets {
 	public Account getAccountByID(int id) {
 		return this.assets.get(id);
 	}
+
+	/**
+	 * Returns the ID from the account with the received name if found
+	 * Not case-sensitive
+	 * @param name - Name to search
+	 * @return id
+	 */
+	public int getIDByName(String name) {
+		for (Account acc : this.assets.values()) {
+			if (name.toLowerCase().equals(acc.getName().toLowerCase())) {
+				return acc.getID();
+			}
+		}
+		return -1;
+	}
 }
 

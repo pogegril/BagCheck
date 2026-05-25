@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-import bank.Assets;
 import ledger.Ledger;
 import sql.Database;
 import tui.TUI;

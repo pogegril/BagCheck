@@ -1,14 +1,14 @@
 # **BagCheck**
 
   A simple terminal ledger to help you organize your finances
----
+
 ## **How to install**
 
   You can find the latest version in the releases page, containing both the compiled program in a .jar file and the source code,
  as long as you have java in your machine you should be able to run the program right away.
   The program creates a hidden directory in the user's home directory to store any user data, if the data is moved or deleted the program will
  create new save data when started.
----
+
 ## **How to use**
 
   You can open the .jar file both in your Desktop normally or in your own Terminal and the program will recognize this and
@@ -17,21 +17,21 @@
   The menu will allow you to go both into your **Assets** and **Ledger**, responsible for aiding on your managing of bank accounts and transactions
  respectively.
 
-###    **-- Assets**
+###    **Assets**
 
        On this menu you'll be able to create your bank accounts and edit any of its details.
        You're able to edit any mistake when you input its information althought the balance is not
       meant to be updated manually, as when you register new transactions in your **Ledger** the
       program keeps track on any changes to your balance
 
-###    **-- Ledger**
+###    **Ledger**
 
        In here you're able to register and manage any new expenses or deposits in the account, as mentioned 
       previously this ledger will keep track of your personal balance aswell as display all transactions by date.
        Since over time this list would get immense there are plenty of filter options available at the top,
       you need only to check which filter type you want and click search.
 
-###    **-- Transactions**
+###    **Transactions**
 
        These are created on the ledger menu and are the individual entries of any deposit or expense.
        To differentiate between these two the amount introduced must be a positive (deposit) or negative (expense)
@@ -40,7 +40,7 @@
       description or tag fields, in which the latter can be a keyword to a certain type of transactions you
       may want to filter through.
 
----
+
 ## **About the Project**
 
   The main goal of this project was developing a simple personal tool that I could use to manage my personal finances along with

@@ -52,7 +52,7 @@ respectively.
 
 ## **About the Project**
 
-  The main goal of this project was developing a simple personal tool that I could use to manage my personal finances along with
+  The main goal of this project was developing a simple tool that I could use to manage my personal finances along with
  learning how to implement SQLite databases in a program. I've been using it for the past few months and developing on top of it
  as I come up with ideas on how to improve its utility or ease of use.
   I've made the unpopular choice of writing this program in Java since it was the programming language I've gotten more familiar with

@@ -20,6 +20,7 @@
 ###    **Assets**
 
        On this menu you'll be able to create your bank accounts and edit any of its details.
+       
        You're able to edit any mistake when you input its information althought the balance is not
       meant to be updated manually, as when you register new transactions in your **Ledger** the
       program keeps track on any changes to your balance
@@ -28,14 +29,17 @@
 
        In here you're able to register and manage any new expenses or deposits in the account, as mentioned 
       previously this ledger will keep track of your personal balance aswell as display all transactions by date.
+      
        Since over time this list would get immense there are plenty of filter options available at the top,
       you need only to check which filter type you want and click search.
 
 ###    **Transactions**
 
        These are created on the ledger menu and are the individual entries of any deposit or expense.
+       
        To differentiate between these two the amount introduced must be a positive (deposit) or negative (expense)
       number.
+      
        When creating a transaction you can write any identification as most convenient in their name,
       description or tag fields, in which the latter can be a keyword to a certain type of transactions you
       may want to filter through.

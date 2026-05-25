@@ -1,6 +1,6 @@
 # **BagCheck**
 
-A simple terminal ledger to help you organize your finances
+A simple terminal ledger to help you organize your finances  
 
 ## **How to install**
 
@@ -8,8 +8,7 @@ You can find the latest version in the releases page, containing both the compil
 as long as you have java in your machine you should be able to run the program right away.
 
 The program creates a hidden directory in the user's home directory to store any user data, if the data is moved or deleted the program will
-create new save data when started.
-
+create new save data when started.  
 
 ## **How to use**
 
@@ -18,8 +17,7 @@ open the TUI within its launch terminal.
 
 Once on the main menu you'll find a menu next to a summarized display of possibly relevant details kept in track for the user.
 The menu will allow you to go both into your **Assets** and **Ledger**, responsible for aiding on your managing of bank accounts and transactions
-respectively.
-
+respectively.  
 
 ###    **Assets**
 
@@ -27,7 +25,7 @@ respectively.
 
   You're able to edit any mistake when you input its information althought the balance is not
   meant to be updated manually, as when you register new transactions in your **Ledger** the
-  program keeps track on any changes to your balancek
+  program keeps track on any changes to your balance  
 
 ###    **Ledger**
 
@@ -36,7 +34,7 @@ respectively.
   transactions by date.
       
   Since over time this list would get immense there are plenty of filter options available at the top,
-  you need only to check which filter type you want and click search.
+  you need only to check which filter type you want and click search.  
 
 ### **Transactions**
 
@@ -47,7 +45,7 @@ respectively.
       
   When creating a transaction you can write any identification as most convenient in their name,
   description or tag fields, in which the latter can be a keyword to a certain type of transactions you
-  may want to filter through.
+  may want to filter through.  
 
 
 ## **About the Project**
@@ -57,7 +55,7 @@ respectively.
  as I come up with ideas on how to improve its utility or ease of use.
   I've made the unpopular choice of writing this program in Java since it was the programming language I've gotten more familiar with
  during my studies at university, but for the simple program I intended and its planned updates it shouldn't prove to be much of a limitation.
-  Feel free to try it out and leave your feedback, any suggested improvement is appreciated.
+  Feel free to try it out and leave your feedback, any suggested improvement is appreciated.  
 
 
 ## **Third-Party Licenses**
